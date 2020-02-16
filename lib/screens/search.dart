@@ -16,7 +16,7 @@ class SearchScreen extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          TextField(),
+          
         ],
       ),
     );
