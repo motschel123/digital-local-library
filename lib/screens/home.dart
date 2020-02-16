@@ -1,5 +1,5 @@
-import 'package:digital_local_libary/Consts/Strings.dart';
-import 'package:digital_local_libary/Pages/SearchPage.dart';
+import 'package:digital_local_libary/consts/strings.dart';
+import 'package:digital_local_libary/screens/search.dart';
 import 'package:digital_local_libary/widgets/books_feed.dart';
 import 'package:flutter/material.dart';
 
@@ -35,7 +35,7 @@ class HomePageState extends State<HomePage> {
           IconButton(icon: Icon(Icons.search), 
           onPressed: () {
             Navigator.push(context,
-            MaterialPageRoute(builder: (context)  => SearchPage()));
+            MaterialPageRoute(builder: (context)  => SearchScreen()));
           })],
       ),
       drawer: homeDrawer,

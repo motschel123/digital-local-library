@@ -1,5 +1,5 @@
-import 'package:digital_local_libary/Pages/HomePage.dart';
-import 'package:digital_local_libary/Consts/Strings.dart';
+import 'package:digital_local_libary/screens/home.dart';
+import 'package:digital_local_libary/consts/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
