@@ -1,9 +1,11 @@
 import 'package:flutter/material.dart';
 
-class BookCard extends Card {
-  BookCard(this.bookImagePath);
+import '../book.dart';
 
-  final String bookImagePath;
+class BookCard extends Card {
+  BookCard(this.book);
+
+  final Book book;
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +19,7 @@ class BookCard extends Card {
               maxHeight: 400,
             ),
             child: SizedBox.expand(
-              child: Image(image: AssetImage(bookImagePath)),
+              child: Image(image: AssetImage(book.imagePath)),
             ),
           ),
         ),
