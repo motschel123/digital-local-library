@@ -16,7 +16,6 @@ class SearchPage extends StatelessWidget {
       ),
       body: Column(
         children: <Widget>[
-          FormField(builder: null)
         ],
       ),
     );

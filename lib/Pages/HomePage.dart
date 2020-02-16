@@ -25,6 +25,7 @@ class HomePageState extends State<HomePage> {
       key: _scaffoldKey,
       appBar: AppBar(
         title: Text(title),
+      
         leading: new IconButton(
             icon: Icon(Icons.menu),
             onPressed: () {
