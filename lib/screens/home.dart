@@ -91,7 +91,7 @@ class HomeScreenState extends State<HomeScreen> {
   }
 
   Widget _createBookFeed() {
-    return Center(child: new BooksFeed());
+    return Center(child: new BooksFeed(_searchText));
   }
 
   Widget _createFloatingActionButton() {

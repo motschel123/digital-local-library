@@ -3,12 +3,16 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 class BooksFeed extends StatefulWidget {
+  final String _filter;
+  
+  BooksFeed(this._filter);
+
   @override
   State<StatefulWidget> createState() => new BooksFeedState();
 }
 
 class BooksFeedState extends State<BooksFeed> {
-  List<String> bookImagePaths = [];
+  List<String> bookImagePaths;
 
   @override
   void initState() {
@@ -33,6 +37,7 @@ class BooksFeedState extends State<BooksFeed> {
   }
 
   Future<Null> getNewData() async{
+    //TODO: add filter
     await Future.delayed(Duration(seconds: 1));
     setState(() {
       bookImagePaths = ["assets/testData/cafe-am-rande.jpg", "assets/testData/kaffee.jpg"];
@@ -45,6 +50,6 @@ class BooksFeedState extends State<BooksFeed> {
     setState(() {
       bookImagePaths = ["assets/testData/kaffee.jpg"];
     });
-    return null; 
+    return null;
   }
 }
