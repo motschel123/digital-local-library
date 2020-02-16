@@ -35,7 +35,7 @@ class BooksFeedState extends State<BooksFeed> {
   Future<Null> getNewData() async{
     await Future.delayed(Duration(seconds: 1));
     setState(() {
-      bookImagePaths = ["testData/buch.jpg", "testData/kaffee.jpg"];
+      bookImagePaths = ["assets/testData/cafe-am-rande.jpg", "assets/testData/kaffee.jpg"];
     });
     return null;
   }
@@ -43,7 +43,7 @@ class BooksFeedState extends State<BooksFeed> {
   Future<Null> getNewData2() async {
     await Future.delayed(Duration(seconds: 1));
     setState(() {
-      bookImagePaths = ["testData/kaffee.jpg"];
+      bookImagePaths = ["assets/testData/kaffee.jpg"];
     });
     return null; 
   }
