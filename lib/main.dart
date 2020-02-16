@@ -16,7 +16,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.greenAccent,
         textTheme: TextTheme(),
       ),
-      home: HomePage(),
+      home: HomeScreen(),
     );
   }
 }

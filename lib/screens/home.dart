@@ -3,12 +3,12 @@ import 'package:digital_local_libary/screens/search.dart';
 import 'package:digital_local_libary/widgets/books_feed.dart';
 import 'package:flutter/material.dart';
 
-class HomePage extends StatefulWidget {
+class HomeScreen extends StatefulWidget {
   @override
-  State<StatefulWidget> createState() => new HomePageState();
+  State<StatefulWidget> createState() => new HomeScreenState();
 }
 
-class HomePageState extends State<HomePage> {
+class HomeScreenState extends State<HomeScreen> {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
   String title = Strings.MAIN_TITLE;
