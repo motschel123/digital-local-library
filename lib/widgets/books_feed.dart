@@ -1,3 +1,4 @@
+import 'package:digital_local_libary/book.dart';
 import 'package:digital_local_libary/models/books_model.dart';
 import 'package:digital_local_libary/widgets/book_card.dart';
 import 'package:flutter/cupertino.dart';
@@ -5,23 +6,38 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class BooksFeed extends StatelessWidget {
+  final String _searchText;
+
+  BooksFeed(this._searchText);
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<BooksModel>(
-      builder: (context, child, model) {
+      rebuildOnChange: true,
+      builder: (context, child, booksModel) {
         return RefreshIndicator(
           child: ListView.builder(
-            itemCount: model.books.length,
+            itemCount: booksModel.books.length,
             itemBuilder: (BuildContext context, int index) {
-              return BookCard(model.books[index]);
+              Book tempBook = booksModel.books[index];
+              if(_searchBookAgainstString(tempBook, _searchText)){
+                return BookCard(tempBook);
+              } else return null;
             },
           ),
           onRefresh: () {
-            model.updateBooks();
+            booksModel.updateBooks();
             return Future<void>((){});
           },
         );
       },
     );
+  }
+  
+  bool _searchBookAgainstString(Book book, String searchText) {
+    if(searchText.isEmpty || (book.title + " " + book.author).toLowerCase().contains(searchText)) {
+      return true;
+    }
+    return false;
   }
 }

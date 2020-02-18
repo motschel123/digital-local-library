@@ -1,10 +1,10 @@
+import 'package:digital_local_libary/models/appbar_model.dart';
 import 'package:digital_local_libary/screens/home_screen.dart';
 import 'package:digital_local_libary/consts/strings.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'package:digital_local_libary/models/books_model.dart';
-
 
 void main() => runApp(MyApp());
 
@@ -18,7 +18,7 @@ class MyApp extends StatelessWidget {
         accentColor: Colors.greenAccent,
         textTheme: TextTheme(),
       ),
-      home: HomeScreen(books: BooksModel()),
+      home: HomeScreen(books: BooksModel(), searchBar: AppBarModel(),),
     );
   }
 }

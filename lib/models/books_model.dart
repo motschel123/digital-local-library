@@ -3,29 +3,20 @@ import 'package:scoped_model/scoped_model.dart';
 
 class BooksModel extends Model {
   List<Book> _books;
-  List<Book> _filteredBooks;
+  
+  List<Book> get books => _books;
 
   BooksModel() {
     _books = [
-      Book("Das Cafe am Rande der Welt", "John Strelecky",
-          "assets/testData/cafe-am-rande.jpg")];
-    _filteredBooks = _books;
+      Book("Das Cafe am Rande der Welt", "John Strelecky", "assets/testData/cafe-am-rande.jpg")];
   }
 
-  List<Book> get books => _filteredBooks;
-
-  void changeBooks(List<Book> books) {
-    this._books = books;
-    notifyListeners();
-  }
+  
 
   void updateBooks() {
-    _books.add(Book("Kaffee und Zigaretten", "Ferdinand von Schirach",
-        "assets/testData/kaffee.jpg"));
+    this._books = [
+      Book("Das Cafe am Rande der Welt", "John Strelecky", "assets/testData/cafe-am-rande.jpg"),
+      Book("Kaffee und Zigaretten", "Ferdinand von Schirach", "assets/testData/kaffee.jpg")];
     notifyListeners();
-  }
-
-  void applyFilter(){
-    
   }
 }

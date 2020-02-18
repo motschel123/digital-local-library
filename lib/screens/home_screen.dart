@@ -1,5 +1,6 @@
 import 'package:digital_local_libary/models/appbar_model.dart';
 import 'package:digital_local_libary/models/books_model.dart';
+//import 'package:digital_local_libary/screens/scan_book.dart';
 import 'package:digital_local_libary/widgets/books_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -13,17 +14,28 @@ class HomeScreen extends StatelessWidget {
   HomeScreen({Key key, this.books, this.searchBar}) : super(key: key);
 
   Widget _createAppBar() {
-    return ScopedModelDescendant<AppBarModel>(builder: (context, child, model) {
-      return AppBar(
-        title: model.appBarTitle,
-        leading: new IconButton(
-            icon: Icon(Icons.menu),
-            onPressed: () {
-              _scaffoldKey.currentState.openDrawer();
-            }),
-        actions: <Widget>[IconButton(icon: model.searchIcon, onPressed: () {})],
-      );
-    });
+    return AppBar(
+      title: ScopedModelDescendant<AppBarModel>(
+        builder: (context, child, model) {
+          return model.appBarTitle;
+        },
+      ),
+      leading: new IconButton(
+        icon: Icon(Icons.menu),
+        onPressed: () {
+          _scaffoldKey.currentState.openDrawer();
+        },
+      ),
+      actions: <Widget>[
+        ScopedModelDescendant<AppBarModel>(builder: (context, child, model) {
+          return IconButton(
+              icon: model.searchIcon,
+              onPressed: () {
+                model.searchPressed();
+              });
+        }),
+      ],
+    );
   }
 
   Widget _createDrawer() {
@@ -47,13 +59,33 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _createBookFeed() {
-    return Center(child: new BooksFeed());
+    return Center(
+      child: ScopedModelDescendant<AppBarModel>(
+        rebuildOnChange: true,
+        builder: (BuildContext context, Widget child, AppBarModel model) {
+          return new BooksFeed(model.searchText);
+        },
+      ),
+    );
   }
 
   Widget _createFloatingActionButton() {
     return FloatingActionButton(
       child: Icon(Icons.add),
-      onPressed: () {},
+      onPressed: () {
+        // Ensure that plugin services are initialized so that `availableCameras()`
+        // can be called before `runApp()`
+        //WidgetsFlutterBinding.ensureInitialized();
+        // Obtain a list of the available cameras on the device.
+        /*final cameras = await availableCameras();
+
+        // Get a specific camera from the list of available cameras.
+        final firstCamera = cameras.first;
+
+        Navigator.push(
+          context, 
+          MaterialPageRoute(builder: (context) => ScanBookScreen(camera: firstCamera)));*/
+      },
     );
   }
 
