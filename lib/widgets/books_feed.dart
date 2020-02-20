@@ -5,10 +5,30 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
+<<<<<<< HEAD
 class BooksFeed extends StatelessWidget {
   final String _searchText;
 
   BooksFeed(this._searchText);
+=======
+class BooksFeed extends StatefulWidget {
+  final String _filter;
+  
+  BooksFeed(this._filter);
+
+  @override
+  State<StatefulWidget> createState() => new BooksFeedState();
+}
+
+class BooksFeedState extends State<BooksFeed> {
+  List<String> bookImagePaths;
+
+  @override
+  void initState() {
+    super.initState();
+    getNewData2();
+  }
+>>>>>>> 993b9e45888d2b02d271cbf9b3d3fe61827cf133
 
   @override
   Widget build(BuildContext context) {
@@ -33,11 +53,30 @@ class BooksFeed extends StatelessWidget {
       },
     );
   }
+<<<<<<< HEAD
   
   bool _searchBookAgainstString(Book book, String searchText) {
     if(searchText.isEmpty || (book.title + " " + book.author).toLowerCase().contains(searchText)) {
       return true;
     }
     return false;
+=======
+
+  Future<Null> getNewData() async{
+    //TODO: add filter
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      bookImagePaths = ["assets/testData/cafe-am-rande.jpg", "assets/testData/kaffee.jpg"];
+    });
+    return null;
+  }
+
+  Future<Null> getNewData2() async {
+    await Future.delayed(Duration(seconds: 1));
+    setState(() {
+      bookImagePaths = ["assets/testData/kaffee.jpg"];
+    });
+    return null;
+>>>>>>> 993b9e45888d2b02d271cbf9b3d3fe61827cf133
   }
 }
