@@ -1,6 +1,7 @@
+import 'package:camera/camera.dart';
 import 'package:digital_local_libary/models/appbar_model.dart';
 import 'package:digital_local_libary/models/books_model.dart';
-//import 'package:digital_local_libary/screens/scan_book.dart';
+import 'package:digital_local_libary/screens/scan_book.dart';
 import 'package:digital_local_libary/widgets/books_feed.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -69,22 +70,22 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _createFloatingActionButton() {
+  Widget _createFloatingActionButton({@required BuildContext context}) {
     return FloatingActionButton(
       child: Icon(Icons.add),
-      onPressed: () {
+      onPressed: () async {
         // Ensure that plugin services are initialized so that `availableCameras()`
         // can be called before `runApp()`
-        //WidgetsFlutterBinding.ensureInitialized();
+        WidgetsFlutterBinding.ensureInitialized();
         // Obtain a list of the available cameras on the device.
-        /*final cameras = await availableCameras();
+        final cameras = await availableCameras();
 
         // Get a specific camera from the list of available cameras.
         final firstCamera = cameras.first;
 
         Navigator.push(
           context, 
-          MaterialPageRoute(builder: (context) => ScanBookScreen(camera: firstCamera)));*/
+          MaterialPageRoute(builder: (context) => ScanBookScreen(camera: firstCamera)));
       },
     );
   }
@@ -100,7 +101,7 @@ class HomeScreen extends StatelessWidget {
           appBar: _createAppBar(),
           drawer: _createDrawer(),
           body: _createBookFeed(),
-          floatingActionButton: _createFloatingActionButton(),
+          floatingActionButton: _createFloatingActionButton(context: context),
         ),
       ),
     );
