@@ -71,21 +71,26 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _createFloatingActionButton({@required BuildContext context}) {
-    return FloatingActionButton(
+    return ScopedModelDescendant<BooksDatabaseModel>(
+      rebuildOnChange: false,
+      builder: (context, child, model) => FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           _scanISBN().then((String isbn) {
-            // TODO: handle ISBN code
             showDialog(
               context: context,
-              builder: (_) => UploadBookDialog(isbnCode: isbn, scaffoldKey: _scaffoldKey),
-              	barrierDismissible: false,  
+              builder: (_) =>
+                  UploadBookDialog(isbnCode: isbn, scaffoldKey: _scaffoldKey),
+              barrierDismissible: false,
             );
           }).catchError((error) {
             print(error);
-            Scaffold.of(context).showSnackBar(SnackBar(content: Text('Something went wrong...')));
+            Scaffold.of(context).showSnackBar(
+                SnackBar(content: Text('Something went wrong...')));
           });
-        });
+        },
+      ),
+    );
   }
 
   Future<String> _scanISBN() async {
