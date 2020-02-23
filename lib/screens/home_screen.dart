@@ -71,9 +71,7 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _createFloatingActionButton({@required BuildContext context}) {
-    return ScopedModelDescendant<BooksDatabaseModel>(
-      rebuildOnChange: false,
-      builder: (context, child, model) => FloatingActionButton(
+    return FloatingActionButton(
         child: Icon(Icons.add),
         onPressed: () {
           _scanISBN().then((String isbn) {
@@ -89,7 +87,6 @@ class HomeScreen extends StatelessWidget {
                 SnackBar(content: Text('Something went wrong...')));
           });
         },
-      ),
     );
   }
 

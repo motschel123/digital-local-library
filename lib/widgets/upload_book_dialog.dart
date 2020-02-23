@@ -15,11 +15,10 @@ class UploadBookDialog extends AlertDialog {
       title: Text("ISBN: $isbnCode"),
       content: Text("Is this the right code?"),
       actions: <Widget>[
-        ScopedModelDescendant<BooksDatabaseModel>(
-          rebuildOnChange: false,
-          builder: (context, child, model) => FlatButton(
+        FlatButton(
             child: Text("Yes"),
             onPressed: () {
+              BooksDatabaseModel model = ScopedModel.of<BooksDatabaseModel>(scaffoldKey.currentContext);
               model.uploadBook(isbn: isbnCode).then((bool success) {
                 if (success) {
                   scaffoldKey.currentState
@@ -32,7 +31,6 @@ class UploadBookDialog extends AlertDialog {
               Navigator.of(context).pop();
             },
           ),
-        ),
         FlatButton(
           child: Text("No"),
           onPressed: () {
