@@ -1,6 +1,6 @@
-import 'package:digital_local_libary/book.dart';
-import 'package:digital_local_libary/models/books_model.dart';
-import 'package:digital_local_libary/widgets/book_card.dart';
+import 'package:digital_local_library/book.dart';
+import 'package:digital_local_library/models/books_model.dart';
+import 'package:digital_local_library/widgets/book_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';

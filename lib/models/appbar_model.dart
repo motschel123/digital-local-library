@@ -1,4 +1,4 @@
-import 'package:digital_local_libary/consts/strings.dart';
+import 'package:digital_local_library/consts/strings.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
