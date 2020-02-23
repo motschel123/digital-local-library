@@ -27,6 +27,8 @@ class BooksDatabaseModel extends Model {
   }
 
   Future<bool> uploadBook({@required isbn}) async {
+    // TODO: uploading books
+    // TODO: get a book's data by it's isbn
     return true;
   }
 }
