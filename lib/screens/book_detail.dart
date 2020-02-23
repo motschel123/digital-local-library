@@ -1,4 +1,4 @@
-import 'package:digital_local_library/book.dart';
+import 'package:digital_local_library/data/book.dart';
 import 'package:flutter/material.dart';
 
 class BookDetailScreen extends StatelessWidget {

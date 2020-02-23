@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:digital_local_library/data/book.dart';
 
-import '../book.dart';
 
 class BookCard extends Card {
   BookCard(this.book);

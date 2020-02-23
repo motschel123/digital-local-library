@@ -1,9 +1,10 @@
-import 'package:digital_local_library/book.dart';
-import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/widgets/book_card.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
+import 'package:digital_local_library/data/book.dart';
+import 'package:digital_local_library/models/books_database_model.dart';
+import 'package:digital_local_library/widgets/book_card.dart';
+
 
 class BooksFeed extends StatelessWidget {
   final String _searchText;

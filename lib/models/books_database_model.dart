@@ -1,4 +1,5 @@
-import 'package:digital_local_library/book.dart';
+import 'package:digital_local_library/data/book.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
@@ -24,5 +25,9 @@ class BooksDatabaseModel extends Model {
 
   void updateBooks() {
     notifyListeners();
+  }
+
+  Future<bool> uploadBook({@required isbn}) async {
+    return true;
   }
 }
