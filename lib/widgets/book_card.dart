@@ -19,7 +19,7 @@ class BookCard extends Card {
               maxHeight: 400,
             ),
             child: SizedBox.expand(
-              child: Image(image: AssetImage(book.imagePath)),
+              child: Image(image: NetworkImage(book.imagePath)),
             ),
           ),
         ),

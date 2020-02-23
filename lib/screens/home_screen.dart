@@ -1,6 +1,6 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/models/appbar_model.dart';
-import 'package:digital_local_library/models/books_model.dart';
+import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
 import 'package:digital_local_library/widgets/upload_book_dialog.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +9,7 @@ import 'package:scoped_model/scoped_model.dart';
 class HomeScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  final BooksModel books;
+  final BooksDatabaseModel books;
   final AppBarModel searchBar;
 
   HomeScreen({Key key, this.books, this.searchBar}) : super(key: key);
@@ -100,7 +100,7 @@ class HomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return ScopedModel<AppBarModel>(
       model: searchBar,
-      child: ScopedModel<BooksModel>(
+      child: ScopedModel<BooksDatabaseModel>(
         model: books,
         child: Scaffold(
           key: _scaffoldKey,
