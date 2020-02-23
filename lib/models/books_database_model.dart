@@ -20,7 +20,6 @@ class BooksDatabaseModel extends Model {
           )
           .toList().reversed.toList();
     });
-    notifyListeners();
   }
 
   void updateBooks() {
