@@ -1,8 +1,8 @@
-import 'package:camera/camera.dart';
-import 'package:digital_local_libary/models/appbar_model.dart';
-import 'package:digital_local_libary/models/books_model.dart';
-import 'package:digital_local_libary/screens/scan_book.dart';
-import 'package:digital_local_libary/widgets/books_feed.dart';
+import 'package:barcode_scan/barcode_scan.dart';
+import 'package:digital_local_library/models/appbar_model.dart';
+import 'package:digital_local_library/models/books_model.dart';
+import 'package:digital_local_library/widgets/books_feed.dart';
+import 'package:digital_local_library/widgets/upload_book_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -72,22 +72,28 @@ class HomeScreen extends StatelessWidget {
 
   Widget _createFloatingActionButton({@required BuildContext context}) {
     return FloatingActionButton(
-      child: Icon(Icons.add),
-      onPressed: () async {
-        // Ensure that plugin services are initialized so that `availableCameras()`
-        // can be called before `runApp()`
-        WidgetsFlutterBinding.ensureInitialized();
-        // Obtain a list of the available cameras on the device.
-        final cameras = await availableCameras();
+        child: Icon(Icons.add),
+        onPressed: () {
+          _scanISBN().then((String isbn) {
+            // TODO: handle ISBN code
+            showDialog(
+              context: context,
+              builder: (_) => UploadBookDialog(isbnCode: isbn, scaffoldKey: _scaffoldKey),
+              	barrierDismissible: false,  
+            );
+          }).catchError((error) {
+            print(error);
+            Scaffold.of(context).showSnackBar(SnackBar(content: Text('Something went wrong...')));
+          });
+        });
+  }
 
-        // Get a specific camera from the list of available cameras.
-        final firstCamera = cameras.first;
-
-        Navigator.push(
-          context, 
-          MaterialPageRoute(builder: (context) => ScanBookScreen(camera: firstCamera)));
-      },
-    );
+  Future<String> _scanISBN() async {
+    try {
+      return await BarcodeScanner.scan();
+    } on Exception {
+      throw Exception();
+    }
   }
 
   @override

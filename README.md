@@ -1,4 +1,4 @@
-# digital_local_libary
+# digital_local_library
 
 A new Flutter project.
 
