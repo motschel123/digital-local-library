@@ -15,8 +15,8 @@ class BooksDatabaseModel extends Model {
     _stream.listen((querySnapshot) {
       _books = querySnapshot.documents
           .map(
-            (dSnap) => new Book(dSnap.data['name'], dSnap.data['author'],
-                dSnap.data['imagePath']),
+            (dSnap) => new Book(title: dSnap.data['title'], author: dSnap.data['author'],
+                imagePath: dSnap.data['imagePath'], isbn: dSnap.data['isbn']),
           )
           .toList().reversed.toList();
     });
@@ -29,6 +29,8 @@ class BooksDatabaseModel extends Model {
   Future<bool> uploadBook({@required isbn}) async {
     // TODO: uploading books
     // TODO: get a book's data by it's isbn
+
+    
     return true;
   }
 }
