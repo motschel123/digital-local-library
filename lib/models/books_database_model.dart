@@ -4,34 +4,38 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
-  final Stream<QuerySnapshot> _stream =
-      Firestore.instance.collection("books").snapshots();
+    final Stream<QuerySnapshot> _stream =
+    Firestore.instance.collection("books").snapshots();
 
-  List<Book> _books = [];
+    List<Book> _books = [];
 
-  List<Book> get books => _books;
+    List<Book> get books => _books;
 
-  BooksDatabaseModel() {
-    _stream.listen((querySnapshot) {
-      _books = querySnapshot.documents
-          .map(
-            (dSnap) {
-              return new Book(isbn: dSnap.data['isbn'].toString(), title: dSnap.data['title'].toString(), author: dSnap.data['author'].toString(),
-                imagePath: dSnap.data['imagePath'].toString());
-            } 
-          )
-          .toList().reversed.toList();
-    });
-  }
+    BooksDatabaseModel () {
+        _stream.listen((querySnapshot) {
+            _books = querySnapshot.documents
+                .map(
+                    (dSnap) {
+                    return new Book(isbn: dSnap.data['isbn'].toString(),
+                        title: dSnap.data['title'].toString(),
+                        author: dSnap.data['author'].toString(),
+                        imagePath: dSnap.data['imagePath'].toString());
+                }
+            )
+                .toList()
+                .reversed
+                .toList();
+        });
+    }
 
-  void updateBooks() {
-    notifyListeners();
-  }
+    void updateBooks () {
+        notifyListeners();
+    }
 
-  Future<bool> uploadBook({@required Book book}) async {
-    // TODO: uploading books
-    // TODO: get a book's data by it's isbn
+    Future<bool> uploadBook ({@required Book book}) async {
+        // TODO: uploading books
+        // TODO: get a book's data by it's isbn
 
-    return true;
-  }
+        return true;
+    }
 }
