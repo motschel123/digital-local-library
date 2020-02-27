@@ -6,11 +6,12 @@ class Book {
     final String imagePath;
     final String isbn;
 
-    Book ({@required this.isbn,
+    Book ({
+        @required this.isbn,
         @required this.title,
         @required this.author,
-        @required this.imagePath});
-
+        @required this.imagePath
+    });
 
     static bool checkIsbn (String isbn) {
         isbn = isbn.replaceAll("-", "").replaceAll(" ", "");

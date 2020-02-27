@@ -12,22 +12,54 @@ class BookCard extends Card {
             onTap: () {
                 // TODO: open bookdetailscreen
             },
+
             child: Card(
-                elevation: 1,
-                shape: ContinuousRectangleBorder(),
-                child: GestureDetector(
-                    child: Container(
-                        child: ConstrainedBox(
-                            constraints: BoxConstraints(
-                                maxHeight: 400,
+                child: Container(
+                    height: 120.0,
+                    margin: EdgeInsets.symmetric(
+                        vertical: 8.0,
+                        horizontal: 16.0
+                    ),
+                    child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                        children: <Widget>[
+                            Container(
+                                alignment: FractionalOffset.centerLeft,
+                                child: Image(
+                                    image: NetworkImage(book.imagePath),
+                                ),
                             ),
-                            child: SizedBox.expand(
-                                child: Image(image: NetworkImage(book.imagePath)),
+                            Expanded(
+                                child: Container(
+                                    height: 120.0,
+                                    margin: EdgeInsets.only(
+                                        left: 16.0,
+                                    ),
+                                    child: Column(
+                                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                        children: <Widget>[
+                                            Text(
+                                                book.title,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    fontSize: 18.0,
+                                                    fontWeight: FontWeight.bold,
+                                                ),
+                                            ),
+                                            Text(
+                                                book.author,
+                                                textAlign: TextAlign.center,
+                                                style: TextStyle(
+                                                    color: Colors.black54,
+                                                ),
+                                            ),
+                                        ],
+                                    ),
+                                ),
                             ),
-                        ),
+                        ],
                     ),
                 ),
-                margin: EdgeInsets.all(10),
             ),
         );
     }
