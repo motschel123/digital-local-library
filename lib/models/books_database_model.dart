@@ -15,8 +15,10 @@ class BooksDatabaseModel extends Model {
     _stream.listen((querySnapshot) {
       _books = querySnapshot.documents
           .map(
-            (dSnap) => new Book(title: dSnap.data['title'], author: dSnap.data['author'],
-                imagePath: dSnap.data['imagePath'], isbn: dSnap.data['isbn']),
+            (dSnap) {
+              return new Book(isbn: dSnap.data['isbn'].toString(), title: dSnap.data['title'].toString(), author: dSnap.data['author'].toString(),
+                imagePath: dSnap.data['imagePath'].toString());
+            } 
           )
           .toList().reversed.toList();
     });
@@ -26,11 +28,10 @@ class BooksDatabaseModel extends Model {
     notifyListeners();
   }
 
-  Future<bool> uploadBook({@required isbn}) async {
+  Future<bool> uploadBook({@required Book book}) async {
     // TODO: uploading books
     // TODO: get a book's data by it's isbn
 
-    
     return true;
   }
 }

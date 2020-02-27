@@ -5,7 +5,7 @@ import 'package:scoped_model/scoped_model.dart';
 class AppBarModel extends Model {
   final TextEditingController _filter = new TextEditingController();
 
-  Widget _appBarTitle = new Text(Consts.MAIN_TITLE);
+  Widget _appBarTitle = new Text(Consts.HOMESCREEN_TITLE);
   String _searchText = "";
   Icon _searchIcon = new Icon(Icons.search);
 
@@ -36,7 +36,7 @@ class AppBarModel extends Model {
       );
     } else {
       this._searchIcon = new Icon(Icons.search);
-      this._appBarTitle = new Text(Consts.MAIN_TITLE);
+      this._appBarTitle = new Text(Consts.HOMESCREEN_TITLE);
       _filter.clear();
     }
     notifyListeners();

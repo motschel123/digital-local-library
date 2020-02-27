@@ -1,4 +1,5 @@
 import 'package:digital_local_library/consts/Consts.dart';
+import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -19,7 +20,7 @@ class UploadBookDialog extends AlertDialog {
             child: Text("Yes"),
             onPressed: () {
               BooksDatabaseModel model = ScopedModel.of<BooksDatabaseModel>(scaffoldKey.currentContext);
-              model.uploadBook(isbn: isbnCode).then((bool success) {
+              model.uploadBook(book: Book(isbn: isbnCode, title: null, author: null, imagePath: null)).then((bool success) {
                 if (success) {
                   scaffoldKey.currentState
                       .showSnackBar(Consts.SNACKBAR_UPLOAD_SUCCESSFUL);

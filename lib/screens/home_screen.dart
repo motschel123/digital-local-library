@@ -1,8 +1,8 @@
 import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
+import 'package:digital_local_library/screens/upload_book_screen.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
-import 'package:digital_local_library/widgets/upload_book_dialog.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -72,32 +72,22 @@ class HomeScreen extends StatelessWidget {
 
   Widget _createFloatingActionButton({@required BuildContext context}) {
     return FloatingActionButton(
-        child: Icon(Icons.add),
-        onPressed: () {
-          _scanISBN().then((String isbn) {
-            showDialog(
-              context: context,
-              builder: (_) =>
-                  UploadBookDialog(isbnCode: isbn, scaffoldKey: _scaffoldKey),
-              barrierDismissible: false,
-            );
-          }).catchError((error) {
-            print(error);
-            Scaffold.of(context).showSnackBar(
-                SnackBar(content: Text('Something went wrong...')));
-          });
-        },
+      child: Icon(Icons.add),
+      onPressed: () async {
+        String _isbn;
+        try {
+          _isbn = await BarcodeScanner.scan();
+        } on Exception {
+          throw Exception();
+        }
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => UploadBookScreen(isbn: _isbn)),
+        );
+      },
     );
   }
-
-  Future<String> _scanISBN() async {
-    try {
-      return await BarcodeScanner.scan();
-    } on Exception {
-      throw Exception();
-    }
-  }
-
+  
   @override
   Widget build(BuildContext context) {
     return ScopedModel<AppBarModel>(
