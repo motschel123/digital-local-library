@@ -64,7 +64,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                                     if (value.isEmpty) {
                                         return null;
                                     }
-                                    return "Enter a image link";
+                                    return "Enter a valid image link";
                                 },
                             ),
                         ],
@@ -72,7 +72,10 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                 ),
             ),
             floatingActionButton: FloatingActionButton(
-                child: Icon(Icons.file_upload),
+                child: Icon(
+                    Icons.file_upload,
+                    color: Colors.white,
+                ),
                 onPressed: () async {
                     if (_formKey.currentState.validate()) {
                         Scaffold

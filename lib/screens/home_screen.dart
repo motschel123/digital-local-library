@@ -73,7 +73,10 @@ class HomeScreen extends StatelessWidget {
 
     Widget _createFloatingActionButton ({@required BuildContext context}) {
         return FloatingActionButton(
-            child: Icon(Icons.add),
+            child: Icon(
+                Icons.add,
+                color: Colors.white,
+            ),
             onPressed: () async {
                 Book _bookInfo;
 
