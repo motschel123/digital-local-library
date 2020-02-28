@@ -3,6 +3,7 @@ import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
+import 'package:digital_local_library/data/book.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -74,15 +75,18 @@ class HomeScreen extends StatelessWidget {
         return FloatingActionButton(
             child: Icon(Icons.add),
             onPressed: () async {
-                String _isbn;
+                Book _bookInfo;
+
                 try {
-                    _isbn = await BarcodeScanner.scan();
+                    String _isbn = await BarcodeScanner.scan();
+                    _bookInfo = await Book.getByIsbn(_isbn);
                 } on Exception {
-                    throw Exception();
+                    throw Exception('Unable to get ISBN or fetch book information');
                 }
+
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UploadBookScreen(isbn: _isbn)),
+                    MaterialPageRoute(builder: (context) => UploadBookScreen(book: _bookInfo)),
                 );
             },
         );

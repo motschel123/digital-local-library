@@ -1,4 +1,6 @@
 import 'package:flutter/material.dart';
+import 'dart:convert';
+import 'package:http/http.dart' as http;
 
 class Book {
     final String title;
@@ -12,6 +14,32 @@ class Book {
         @required this.author,
         @required this.imagePath
     });
+
+    static Future<Book> getByIsbn(String isbn) async {
+        // Encode url and fetch result from API
+        String bookUrl = Uri.encodeFull("https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn);
+        var res = await http.get(bookUrl);
+
+        if (res.statusCode == 200) {
+            var jsonData = json.decode(res.body);
+
+            // Check whether a book with this ISBN exists
+            if (jsonData['totalItems'] > 0) {
+                var bookData = jsonData['items'][0]['volumeInfo'];
+
+                return Book(
+                    title: bookData['title'],
+                    author: bookData['authors'][0],
+                    imagePath: bookData['imageLinks']['thumbnails'],
+                    isbn: bookData['industryIdentifiers'][0]['identifier'],
+                );
+            } else {
+                throw Exception('No book was found with this ISBN');
+            }
+        } else {
+            throw Exception("Failed to load book from API");
+        }
+    }
 
     static bool checkIsbn (String isbn) {
         isbn = isbn.replaceAll("-", "").replaceAll(" ", "");

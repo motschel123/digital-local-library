@@ -3,9 +3,9 @@ import 'package:digital_local_library/data/book.dart';
 import 'package:flutter/material.dart';
 
 class UploadBookScreen extends StatefulWidget {
-    final String isbn;
+    final Book book;
 
-    UploadBookScreen ({@required this.isbn});
+    UploadBookScreen ({@required this.book});
 
     @override
     State<StatefulWidget> createState () => UploadBookScreenState();
@@ -28,6 +28,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                         children: <Widget>[
                             TextFormField(
                                 decoration: InputDecoration(hintText: "Enter title"),
+                                initialValue: widget.book.title,
                                 autofocus: true,
                                 validator: (value) {
                                     if (value.isEmpty) {
@@ -38,6 +39,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                             ),
                             TextFormField(
                                 decoration: InputDecoration(hintText: "Enter author"),
+                                initialValue: widget.book.author,
                                 validator: (value) {
                                     if (value.isEmpty) {
                                         return 'Please enter the author!';
@@ -47,7 +49,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                             ),
                             TextFormField(
                                 decoration: InputDecoration(hintText: "Enter isbn"),
-                                initialValue: widget.isbn,
+                                initialValue: widget.book.isbn,
                                 validator: (String value) {
                                     if (Book.checkIsbn(value)) {
                                         return null;
