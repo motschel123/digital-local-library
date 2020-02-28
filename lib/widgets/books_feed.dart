@@ -19,6 +19,7 @@ class BooksFeed extends StatelessWidget {
                 ],
             );
         }
+
         return ListView.builder(
             itemCount: booksModel.books.length,
             itemBuilder: (BuildContext context, int index) {
