@@ -27,11 +27,16 @@ class Book {
             if (jsonData['totalItems'] > 0) {
                 var bookData = jsonData['items'][0]['volumeInfo'];
 
+                String _bookTitle = bookData['title'];
+                String _bookAuthor = bookData['authors'][0];
+                String _bookThumbnail = bookData.containsKey('imageLinks') ? bookData['imageLinks']['thumbnail'] : "";
+                String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
+
                 return Book(
-                    title: bookData['title'],
-                    author: bookData['authors'][0],
-                    imagePath: bookData['imageLinks']['thumbnails'],
-                    isbn: bookData['industryIdentifiers'][0]['identifier'],
+                    title: _bookTitle,
+                    author: _bookAuthor,
+                    imagePath: _bookThumbnail,
+                    isbn: _bookIsbn,
                 );
             } else {
                 throw Exception('No book was found with this ISBN');
