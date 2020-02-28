@@ -57,6 +57,16 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                                     return "Enter a valid ISBN!";
                                 },
                             ),
+                            TextFormField(
+                                decoration: InputDecoration(hintText: "Enter thumbnail image link"),
+                                initialValue: widget.book.imagePath,
+                                validator: (String value) {
+                                    if (value.isEmpty) {
+                                        return null;
+                                    }
+                                    return "Enter a image link";
+                                },
+                            ),
                         ],
                     ),
                 ),
