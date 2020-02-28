@@ -11,24 +11,26 @@ class BooksFeed extends StatelessWidget {
 
     BooksFeed (this._searchText);
 
-    Widget _createListView (BooksDatabaseModel booksModel) {
+    Widget _createExpansionPanelList (BooksDatabaseModel booksModel) {
         if (booksModel.books.isEmpty) {
-            return ListView(
-                children: <Widget>[
-                    Center(child: Text("Pull down to refresh!"),),
-                ],
+            return SingleChildScrollView(
+                child:  Center(child: Text("Pull down to refresh!"),),
             );
         }
-        return ListView.builder(
-            itemCount: booksModel.books.length,
-            itemBuilder: (BuildContext context, int index) {
-                Book tempBook = booksModel.books[index];
+        return SingleChildScrollView(
+            child: Container (child: ExpansionPanelList.radio(
+            children: List<ExpansionPanelRadio>
+                .generate(
+                    booksModel.books.length, 
+                    (int index) {
+                        Book tempBook = booksModel.books[index];
                 if (_searchBookAgainstString(tempBook, _searchText)) {
-                    return BookCard(tempBook);
+                    return BookCard(book: tempBook);
                 } else
                     return null;
-            },
-        );
+                    },
+                ),
+        )));
     }
 
     @override
@@ -37,7 +39,7 @@ class BooksFeed extends StatelessWidget {
             rebuildOnChange: true,
             builder: (context, child, booksModel) {
                 return RefreshIndicator(
-                    child: _createListView(booksModel),
+                    child: _createExpansionPanelList(booksModel),
                     onRefresh: () {
                         booksModel.updateBooks();
                         return Future<void>(() {});
