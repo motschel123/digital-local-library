@@ -89,7 +89,7 @@ class HomeScreen extends StatelessWidget {
 
                 Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => UploadBookScreen(book: _bookInfo)),
+                    MaterialPageRoute(builder: (context) => UploadBookScreen(book: _bookInfo, scaffoldKey: _scaffoldKey)),
                 );
             },
         );

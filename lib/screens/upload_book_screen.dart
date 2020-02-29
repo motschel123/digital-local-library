@@ -4,8 +4,9 @@ import 'package:flutter/material.dart';
 
 class UploadBookScreen extends StatefulWidget {
     final Book book;
+    final GlobalKey<ScaffoldState> scaffoldKey;
 
-    UploadBookScreen ({@required this.book});
+    UploadBookScreen ({@required this.book, @required this.scaffoldKey});
 
     @override
     State<StatefulWidget> createState () => UploadBookScreenState();
@@ -107,8 +108,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                 ),
                 onPressed: () async {
                     if (_formKey.currentState.validate()) {
-                        Scaffold
-                            .of(context)
+                        widget.scaffoldKey.currentState
                             .showSnackBar(SnackBar(content: Text('Uploading your Book...')));
                         await Future.delayed(const Duration(seconds: 2));
                         Navigator.of(context).pop();
