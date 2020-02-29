@@ -26,21 +26,18 @@ class BooksFeed extends StatelessWidget {
         ],
       );
     }
-    return ListView(children: <Widget>[
-        SingleChildScrollView(
-            child: ExpansionPanelList.radio(
-                children: List<ExpansionPanelRadio>.generate(
-                    booksModel.books.length,
-                    (int index) {
-                        Book tempBook = booksModel.books[index];
-                        if (_searchBookAgainstString(tempBook, _searchText)) {
-                            return BookCard(book: tempBook);
-                        } else  {
-                            return null;
-                        }
-                    },
-                ),
-            ),
+    return ListView(children: <Widget>[ExpansionPanelList.radio(
+          children: List<ExpansionPanelRadio>.generate(
+            booksModel.books.length,
+            (int index) {
+              Book tempBook = booksModel.books[index];
+              if (_searchBookAgainstString(tempBook, _searchText)) {
+                return BookCard(book: tempBook);
+              } else {
+                return null;
+              }
+            },
+          ),
         ),
     ]);
   }
