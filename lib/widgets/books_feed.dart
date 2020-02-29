@@ -6,34 +6,27 @@ import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/widgets/book_card.dart';
 
 class BooksFeed extends StatelessWidget {
-  final String _searchText;
+  final String searchText;
 
-  BooksFeed(this._searchText);
+  BooksFeed({this.searchText});
 
-  Widget _createExpansionPanelList(BooksDatabaseModel booksModel) {
+  Widget _createFeed(BooksDatabaseModel booksModel) {
     if (booksModel.books.isEmpty) {
       return Center(
-        child: Padding(
-          padding: EdgeInsets.symmetric(vertical: 50.0),
-          child: Text(
-            "Pull down to refresh!",
-            textScaleFactor: 1.8,
-          ),
+        child: Text(
+          "Pull down to refresh books!",
         ),
       );
     }
-    List<Book> filteredBooks = booksModel.books.map((Book book) {
-      if (_searchBookAgainstString(book, _searchText)) {
-        return book;
-      }
-    }).toList();
-    
+
+    List<Book> filteredBooks = List.from(booksModel.books);
+    filteredBooks.retainWhere((Book book) => book.containsString(searchText));
+
     return ExpansionPanelList.radio(
       children: List<ExpansionPanelRadio>.generate(
         filteredBooks.length,
         (int index) {
           Book tempBook = filteredBooks[index];
-          if(tempBook == null) return null;
           return BookCard(book: tempBook, value: index);
         },
       ),
@@ -42,31 +35,20 @@ class BooksFeed extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Align(
-      alignment: Alignment.topCenter,
-      child: ScopedModelDescendant<BooksDatabaseModel>(
-        rebuildOnChange: true,
-        builder: (context, child, booksModel) {
-          return RefreshIndicator(
-            child: SingleChildScrollView(
-              physics: const AlwaysScrollableScrollPhysics(),
-              child: _createExpansionPanelList(booksModel),
-            ),
-            onRefresh: () {
-              booksModel.updateBooks();
-              return Future<void>(() {});
-            },
-          );
-        },
-      ),
+    return ScopedModelDescendant<BooksDatabaseModel>(
+      rebuildOnChange: true,
+      builder: (context, child, booksModel) {
+        return RefreshIndicator(
+          child: ListView(
+            physics: const AlwaysScrollableScrollPhysics(),
+            children: <Widget>[_createFeed(booksModel)],
+          ),
+          onRefresh: () {
+            booksModel.updateBooks();
+            return Future<void>(() {});
+          },
+        );
+      },
     );
-  }
-
-  bool _searchBookAgainstString(Book book, String searchText) {
-    if (searchText.isEmpty ||
-        (book.title + " " + book.author).toLowerCase().contains(searchText)) {
-      return true;
-    }
-    return false;
   }
 }
