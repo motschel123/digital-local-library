@@ -73,10 +73,10 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                                             textAlign: TextAlign.right,
                                             initialValue: widget.book.isbn,
                                             validator: (String value) {
-                                                if (Book.checkIsbn(value)) {
-                                                    return null;
+                                                if (!Book.checkIsbn(value)) {
+                                                    return "Enter a valid ISBN!";
                                                 }
-                                                return "Enter a valid ISBN!";
+                                                return null;
                                             },
                                         ),
                                         TextFormField(
@@ -88,9 +88,9 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                                             initialValue: widget.book.imagePath,
                                             validator: (String value) {
                                                 if (value.isEmpty) {
-                                                    return null;
+                                                    return "Enter a valid image link";
                                                 }
-                                                return "Enter a valid image link";
+                                                return null;
                                             },
                                         ),
                                     ],
