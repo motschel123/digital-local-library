@@ -12,49 +12,53 @@ class BooksFeed extends StatelessWidget {
 
   Widget _createExpansionPanelList(BooksDatabaseModel booksModel) {
     if (booksModel.books.isEmpty) {
-      return ListView(
-        children: <Widget>[
-          Center(
-            child: Padding(
-              padding: EdgeInsets.symmetric(vertical: 50.0),
-              child: Text(
-                "Pull down to refresh!",
-                textScaleFactor: 1.8,
-              ),
-            ),
-          )
-        ],
-      );
-    }
-    return ListView(children: <Widget>[ExpansionPanelList.radio(
-          children: List<ExpansionPanelRadio>.generate(
-            booksModel.books.length,
-            (int index) {
-              Book tempBook = booksModel.books[index];
-              if (_searchBookAgainstString(tempBook, _searchText)) {
-                return BookCard(book: tempBook);
-              } else {
-                return null;
-              }
-            },
+      return Center(
+        child: Padding(
+          padding: EdgeInsets.symmetric(vertical: 50.0),
+          child: Text(
+            "Pull down to refresh!",
+            textScaleFactor: 1.8,
           ),
         ),
-    ]);
+      );
+    }
+    List<Book> filteredBooks = booksModel.books.map((Book book) {
+      if (_searchBookAgainstString(book, _searchText)) {
+        return book;
+      }
+    }).toList();
+    
+    return ExpansionPanelList.radio(
+      children: List<ExpansionPanelRadio>.generate(
+        filteredBooks.length,
+        (int index) {
+          Book tempBook = filteredBooks[index];
+          if(tempBook == null) return null;
+          return BookCard(book: tempBook, value: index);
+        },
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<BooksDatabaseModel>(
-      rebuildOnChange: true,
-      builder: (context, child, booksModel) {
-        return RefreshIndicator(
-          child: _createExpansionPanelList(booksModel),
-          onRefresh: () {
-            booksModel.updateBooks();
-            return Future<void>(() {});
-          },
-        );
-      },
+    return Align(
+      alignment: Alignment.topCenter,
+      child: ScopedModelDescendant<BooksDatabaseModel>(
+        rebuildOnChange: true,
+        builder: (context, child, booksModel) {
+          return RefreshIndicator(
+            child: SingleChildScrollView(
+              physics: const AlwaysScrollableScrollPhysics(),
+              child: _createExpansionPanelList(booksModel),
+            ),
+            onRefresh: () {
+              booksModel.updateBooks();
+              return Future<void>(() {});
+            },
+          );
+        },
+      ),
     );
   }
 
