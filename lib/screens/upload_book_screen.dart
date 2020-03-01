@@ -14,24 +14,90 @@ class UploadBookScreen extends StatefulWidget {
 class UploadBookScreenState extends State<UploadBookScreen> {
   final _formKey = GlobalKey<FormState>();
 
-  @override
-  Widget build(BuildContext context) {
-    return Scaffold(
-        appBar: AppBar(
-          title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
-        ),
-        body: Form(
-          key: _formKey,
-          child: Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: <Widget>[
-                Container(
-                  margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                  height: 120.0,
-                  child: Image(
-                    image: NetworkImage(widget.book.imagePath),
-                  ),
+    @override
+    Widget build (BuildContext context) {
+        return Scaffold(
+            appBar: AppBar(
+                title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
+            ),
+            body: Form(
+                key: _formKey,
+                child: Padding(
+                    padding: const EdgeInsets.all(8.0),
+                    child: Row(
+                        children: <Widget>[
+                            Container(
+                                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                                height: 120.0,
+                                child: Image(
+                                    image: NetworkImage(widget.book.imagePath),
+                                ),
+                            ),
+                            Expanded(
+                                child: Column(
+                                    children: <Widget>[
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Enter title",
+                                                prefixText: "Title",
+                                            ),
+                                            textAlign: TextAlign.right,
+                                            initialValue: widget.book.title,
+                                            autofocus: true,
+                                            validator: (value) {
+                                                if (value.isEmpty) {
+                                                    return 'Please enter the title!';
+                                                }
+                                                return null;
+                                            },
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Enter author",
+                                                prefixText: "Author",
+                                            ),
+                                            textAlign: TextAlign.right,
+                                            initialValue: widget.book.author,
+                                            validator: (value) {
+                                                if (value.isEmpty) {
+                                                    return 'Please enter the author!';
+                                                }
+                                                return null;
+                                            },
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Enter isbn",
+                                                prefixText: "ISBN",
+                                            ),
+                                            textAlign: TextAlign.right,
+                                            initialValue: widget.book.isbn,
+                                            validator: (String value) {
+                                                if (!Book.checkIsbn(value)) {
+                                                    return "Enter a valid ISBN!";
+                                                }
+                                                return null;
+                                            },
+                                        ),
+                                        TextFormField(
+                                            decoration: InputDecoration(
+                                                hintText: "Enter thumbnail image link",
+                                                prefixText: "Thumbnail",
+                                            ),
+                                            textAlign: TextAlign.right,
+                                            initialValue: widget.book.imagePath,
+                                            validator: (String value) {
+                                                if (value.isEmpty) {
+                                                    return "Enter a valid image link";
+                                                }
+                                                return null;
+                                            },
+                                        ),
+                                    ],
+                              ),
+                            ),
+                        ],
+                    ),
                 ),
                 Expanded(
                   child: Column(
