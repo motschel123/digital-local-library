@@ -43,6 +43,13 @@ class Book {
     }
   }
 
+  bool containsString(String str) {
+    if (str.isEmpty || (title + " " + author).toLowerCase().contains(str)) {
+      return true;
+    }
+    return false;
+  }
+
   static bool checkIsbn(String isbn) {
     isbn = isbn.replaceAll("-", "").replaceAll(" ", "");
     if (isbn.length == 13) {

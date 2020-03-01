@@ -61,11 +61,12 @@ class HomeScreen extends StatelessWidget {
   }
 
   Widget _createBookFeed() {
-    return Center(
+    return Container(
+        alignment: Alignment.center,
       child: ScopedModelDescendant<AppBarModel>(
         rebuildOnChange: true,
         builder: (BuildContext context, Widget child, AppBarModel model) {
-          return new BooksFeed(model.searchText);
+          return new BooksFeed(searchText: model.searchText);
         },
       ),
     );
