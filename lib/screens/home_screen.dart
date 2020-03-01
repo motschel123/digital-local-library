@@ -10,10 +10,10 @@ import 'package:scoped_model/scoped_model.dart';
 class HomeScreen extends StatelessWidget {
     final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-    final BooksDatabaseModel books;
-    final AppBarModel searchBar;
+    final BooksDatabaseModel booksModel = BooksDatabaseModel();
+    final AppBarModel searchBarModel = AppBarModel();
 
-    HomeScreen ({Key key, this.books, this.searchBar}) : super(key: key);
+    HomeScreen ({Key key}) : super(key: key);
 
     Widget _createAppBar () {
         return AppBar(
@@ -98,9 +98,9 @@ class HomeScreen extends StatelessWidget {
     @override
     Widget build (BuildContext context) {
         return ScopedModel<AppBarModel>(
-            model: searchBar,
+            model: searchBarModel,
             child: ScopedModel<BooksDatabaseModel>(
-                model: books,
+                model: booksModel,
                 child: Scaffold(
                     key: _scaffoldKey,
                     appBar: _createAppBar(),

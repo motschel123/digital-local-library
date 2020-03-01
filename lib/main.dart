@@ -1,9 +1,9 @@
+import 'package:digital_local_library/screens/landing_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/consts/Consts.dart';
-import 'package:digital_local_library/screens/home_screen.dart';
-import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/models/appbar_model.dart';
+import 'package:digital_local_library/models/firebase_auth_model.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 void main () => runApp(MyApp());
 
@@ -17,9 +17,9 @@ class MyApp extends StatelessWidget {
                 accentColor: Colors.greenAccent,
                 textTheme: TextTheme(),
             ),
-            home: HomeScreen(
-                books: BooksDatabaseModel(),
-                searchBar: AppBarModel(),
+            home: ScopedModel<FirebaseAuthModel>(
+                model: FirebaseAuthModel(),
+                child: LandingScreen(),
             ),
         );
     }
