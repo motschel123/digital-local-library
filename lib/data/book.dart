@@ -24,7 +24,7 @@ class Book {
         var bookData = jsonData['items'][0]['volumeInfo'];
 
         String _bookTitle = bookData['title'];
-        String _bookAuthor = bookData['authors'][0];
+        String _bookAuthor = bookData.containsKey('authors') ? bookData['authors'][0] : "";
         String _bookThumbnail =
             bookData.containsKey('imageLinks') ? bookData['imageLinks']['thumbnail'] : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
