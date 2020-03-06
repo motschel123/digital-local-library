@@ -4,7 +4,8 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
-  final Stream<QuerySnapshot> _stream = Firestore.instance.collection("books").snapshots();
+  final Stream<QuerySnapshot> _stream =
+      Firestore.instance.collection("books").snapshots();
 
   List<Book> _books = [];
 
@@ -31,7 +32,6 @@ class BooksDatabaseModel extends Model {
   }
 
   Future<bool> uploadBook({@required Book book}) async {
-      
-    return true;
+    Future.delayed(const Duration(seconds: 1)).then((_) => true);
   }
 }

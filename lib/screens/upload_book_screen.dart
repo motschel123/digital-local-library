@@ -16,25 +16,22 @@ class UploadBookScreen extends StatefulWidget {
 class UploadBookScreenState extends State<UploadBookScreen> {
   final _formKey = GlobalKey<FormState>();
   final _scaffoldKey = GlobalKey<ScaffoldState>();
-  
+
   final TextEditingController isbnController = TextEditingController();
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
 
+  bool formEnabled = true;
+
   @override
   void initState() {
+    super.initState();
     isbnController.text = widget.book.isbn;
     titleController.text = widget.book.title;
     authorController.text = widget.book.author;
     imageLinkController.text = widget.book.imagePath;
-
-    super.initState();
   }
-
-
-
-  bool formEnabled = true;
 
   @override
   Widget build(BuildContext context) {
@@ -137,32 +134,33 @@ class UploadBookScreenState extends State<UploadBookScreen> {
             : () async {
                 FormState formState = _formKey.currentState;
                 if (formState.validate()) {
+                  // Close keyboard
                   FocusScope.of(_scaffoldKey.currentContext)
                       .requestFocus(FocusNode());
 
+                  // Give visual feedback to the user
                   _scaffoldKey.currentState.showSnackBar(
                     SnackBar(content: Text('Uploading your Book...')),
                   );
-                  setState(() {
-                    formEnabled = false;
-                  });
+                  // create book to upload
                   Book uploadBook = new Book(
-                      isbn: isbnController.text,
-                      title: titleController.text,
-                      author: authorController.text,
-                      imagePath: imageLinkController.text);
+                    isbn: isbnController.text,
+                    title: titleController.text,
+                    author: authorController.text,
+                    imagePath: imageLinkController.text,
+                  );
+                  // call databaseModel to upload the book
                   ScopedModel.of<BooksDatabaseModel>(context)
                       .uploadBook(book: uploadBook)
                       .then((uploaded) {
+                    // after upload complete
                     if (uploaded) {
+                      _scaffoldKey.currentState.hideCurrentSnackBar();
                       Navigator.of(context).pop();
                     } else {
                       _scaffoldKey.currentState.showSnackBar(
                         SnackBar(content: Text('Something went wrong...')),
                       );
-                      setState(() {
-                        formEnabled = true;
-                      });
                     }
                   });
                 }
