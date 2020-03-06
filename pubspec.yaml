@@ -30,6 +30,8 @@ dependencies:
   firebase_core: ^0.4.4+2
   
   cloud_firestore: ^0.13.3
+  cached_network_image: ^2.0.0
+
 
   firebase_auth: ^0.15.5+2
   google_sign_in: ^4.1.4
