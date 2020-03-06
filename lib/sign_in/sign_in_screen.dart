@@ -15,7 +15,7 @@ class SignInScreen extends StatelessWidget {
             SignInButton(
               Buttons.Google,
               onPressed: () {
-                  print(AuthProvider.of(context).auth.signInWithGoogle());
+                  print(AuthProvider.of(context).signInWithGoogle());
               },
               text: "Sign in with google",
             ),

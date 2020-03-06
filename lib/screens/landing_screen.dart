@@ -8,7 +8,7 @@ import 'package:flutter/material.dart';
 class LandingScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    final Auth auth = AuthProvider.of(context).auth;
+    final Auth auth = AuthProvider.of(context);
     return StreamBuilder(
       stream: auth.onAuthStateChanged,
       builder: (context, AsyncSnapshot<String> snapshot) {

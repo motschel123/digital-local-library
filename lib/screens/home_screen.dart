@@ -2,7 +2,6 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
-import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/widgets/home_drawer.dart';
@@ -47,7 +46,7 @@ class HomeScreen extends StatelessWidget {
       child: ScopedModelDescendant<AppBarModel>(
         rebuildOnChange: true,
         builder: (BuildContext context, Widget child, AppBarModel model) {
-          return new BooksFeed(model.searchText);
+          return new BooksFeed(searchText: model.searchText);
         },
       ),
     );
@@ -61,11 +60,11 @@ class HomeScreen extends StatelessWidget {
       ),
       onPressed: () async {
         Book _bookInfo;
-
         try {
           String _isbn = await BarcodeScanner.scan();
           _bookInfo = await Book.getByIsbn(_isbn);
         } on Exception {
+          _scaffoldKey.currentState.showSnackBar(const SnackBar(content: const Text("Couldn't get ISBN")));
           throw Exception('Unable to get ISBN or fetch book information');
         }
 
