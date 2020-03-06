@@ -15,13 +15,21 @@
       },
       "oauth_client": [
         {
+          "client_id": "869673660052-mk9ti3so6neafur54kia9tl4g1kr5412.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.motschel.digital_local_library",
+            "certificate_hash": "f6b5934688c5f6881e3178fb036a5d60c2375592"
+          }
+        },
+        {
           "client_id": "869673660052-bala5d3ovbhka41pd1e39hu6m899dgv8.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyCM-j5PIbBd5s4nzZ0uQeNtdo35OGeuSZc"
+          "current_key": "AIzaSyD3aWBoAsFSxWcn27q_9YTYnAWAFzCzUME"
         }
       ],
       "services": {

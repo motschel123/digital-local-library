@@ -2,18 +2,20 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
 import 'package:digital_local_library/data/book.dart';
+import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class HomeScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
 
-  final BooksDatabaseModel books;
-  final AppBarModel searchBar;
+  final BooksDatabaseModel booksModel = BooksDatabaseModel();
+  final AppBarModel searchBarModel = AppBarModel();
 
-  HomeScreen({Key key, this.books, this.searchBar}) : super(key: key);
+  HomeScreen({Key key}) : super(key: key);
 
   Widget _createAppBar() {
     return AppBar(
@@ -40,33 +42,12 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _createDrawer() {
-    return Drawer(
-      child: ListView(
-        padding: EdgeInsets.zero,
-        children: <Widget>[
-          DrawerHeader(
-            child: Text(
-              'Drawer Home',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-              ),
-            ),
-          ),
-          RaisedButton(child: Text("Friends"), onPressed: () {}),
-        ],
-      ),
-    );
-  }
-
   Widget _createBookFeed() {
-    return Container(
-        alignment: Alignment.center,
+    return Center(
       child: ScopedModelDescendant<AppBarModel>(
         rebuildOnChange: true,
         builder: (BuildContext context, Widget child, AppBarModel model) {
-          return new BooksFeed(searchText: model.searchText);
+          return new BooksFeed(model.searchText);
         },
       ),
     );
@@ -90,7 +71,9 @@ class HomeScreen extends StatelessWidget {
 
         Navigator.push(
           context,
-          MaterialPageRoute(builder: (context) => UploadBookScreen(book: _bookInfo)),
+          MaterialPageRoute(
+            builder: (context) => UploadBookScreen(book: _bookInfo),
+          ),
         );
       },
     );
@@ -99,13 +82,13 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<AppBarModel>(
-      model: searchBar,
+      model: searchBarModel,
       child: ScopedModel<BooksDatabaseModel>(
-        model: books,
+        model: booksModel,
         child: Scaffold(
           key: _scaffoldKey,
           appBar: _createAppBar(),
-          drawer: _createDrawer(),
+          drawer: HomeDrawer(),
           body: _createBookFeed(),
           floatingActionButton: _createFloatingActionButton(context: context),
         ),
