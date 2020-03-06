@@ -15,9 +15,11 @@ class MyApp extends StatelessWidget {
       child: MaterialApp(
         title: Consts.HOMESCREEN_TITLE,
         theme: ThemeData(
+          brightness: Brightness.light,
+          
           primaryColor: Colors.red[400],
           accentColor: Colors.greenAccent,
-          textTheme: TextTheme(),
+          
         ),
         home: LandingScreen(),
       ),
