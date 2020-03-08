@@ -44,7 +44,7 @@ class Book {
   }
 
   bool containsString(String str) {
-    if (str.isEmpty || (title + " " + author).toLowerCase().contains(str)) {
+    if (str.isEmpty || (title + " " + author).toLowerCase().replaceAll(" ", "").contains(str.toLowerCase().replaceAll(" ", ""))) {
       return true;
     }
     return false;

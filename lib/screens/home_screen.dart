@@ -59,19 +59,11 @@ class HomeScreen extends StatelessWidget {
         color: Colors.white,
       ),
       onPressed: () async {
-        Book _bookInfo;
-        try {
-          String _isbn = await BarcodeScanner.scan();
-          _bookInfo = await Book.getByIsbn(_isbn);
-        } on Exception {
-          _scaffoldKey.currentState.showSnackBar(const SnackBar(content: const Text("Couldn't get ISBN")));
-          throw Exception('Unable to get ISBN or fetch book information');
-        }
-
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => UploadBookScreen(book: _bookInfo),
+            builder: (BuildContext context) =>
+                UploadBookScreen(booksModel: booksModel),
           ),
         );
       },
