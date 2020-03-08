@@ -1,4 +1,5 @@
 import 'package:digital_local_library/data/book.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -36,7 +37,7 @@ class BooksDatabaseModel extends Model {
       "author": book.author,
       "title": book.title,
       "isbn": book.isbn,
-      "imagePath": book.imagePath
+      "imagePath": book.imagePath,
     });
     return true;
   }

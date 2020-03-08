@@ -1,4 +1,5 @@
 import 'package:digital_local_library/sign_in/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 
@@ -20,12 +21,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 Theme.of(context).primaryColor.withOpacity(0.6)
               ]),
             ),
-            child: Text(
-              'Drawer Home',
-              style: TextStyle(
-                color: Colors.black,
-                fontSize: 24,
-              ),
+            child: StreamBuilder(
+              stream: AuthProvider.of(context).currentUser().asStream(),
+              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
+                String user = snapshot.hasData ? snapshot.data.toString() : "";
+                return Text(
+                  'Logged in as: $user',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontSize: 24,
+                  ),
+                );
+              },
             ),
           ),
           RaisedButton(
