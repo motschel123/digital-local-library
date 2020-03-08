@@ -1,4 +1,6 @@
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
+import 'package:digital_local_library/sign_in/auth.dart';
 
 class HomeDrawer extends StatefulWidget {
   @override
@@ -32,7 +34,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           Container(
             child: MaterialButton(
-              onPressed: null,
+              onPressed: () => AuthProvider.of(context).signOut(),
               child: Text("Sign out"),
             ),
           ),
