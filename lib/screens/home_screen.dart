@@ -59,7 +59,7 @@ class HomeScreen extends StatelessWidget {
         color: Colors.white,
       ),
       onPressed: () async {
-        Navigator.push(
+        bool successfullUpload = await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) =>

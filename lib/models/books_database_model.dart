@@ -32,7 +32,12 @@ class BooksDatabaseModel extends Model {
   }
 
   Future<bool> uploadBook({@required Book book}) async {
-    await Future.delayed(const Duration(seconds: 1));
+    await Firestore.instance.collection("books").add({
+      "author": book.author,
+      "title": book.title,
+      "isbn": book.isbn,
+      "imagePath": book.imagePath
+    });
     return true;
   }
 }

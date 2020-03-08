@@ -3,7 +3,6 @@ import 'package:digital_local_library/consts/Consts.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class UploadBookScreen extends StatefulWidget {
   final BooksDatabaseModel booksModel;
@@ -26,6 +25,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   final TextEditingController imageLinkController = TextEditingController();
 
   bool fetchingData = false;
+  bool uploadSuccessful = false;
 
   @override
   initState() {
@@ -215,9 +215,13 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                   setState(() {
                     fetchingData = true;
                   });
+
                   bool uploadedBook =
                       await widget.booksModel.uploadBook(book: uploadBook);
                   if (uploadedBook) {
+                    setState(() {
+                      uploadSuccessful = true;
+                    });
                     Navigator.of(context).pop();
                   } else {
                     _scaffoldKey.currentState.showSnackBar(
