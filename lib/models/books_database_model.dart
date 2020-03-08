@@ -32,6 +32,7 @@ class BooksDatabaseModel extends Model {
   }
 
   Future<bool> uploadBook({@required Book book}) async {
-    Future.delayed(const Duration(seconds: 1)).then((_) => true);
+    await Future.delayed(const Duration(seconds: 1));
+    return true;
   }
 }

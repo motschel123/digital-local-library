@@ -55,7 +55,11 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
       ),
       body: fetchingData
-          ? Center(child: CircularProgressIndicator())
+          ? Center(
+              child: Column(children: <Widget>[
+              Text("Fetching your data"),
+              CircularProgressIndicator()
+            ]))
           : Form(
               key: _formKey,
               child: Padding(
@@ -187,36 +191,41 @@ class UploadBookScreenState extends State<UploadBookScreen> {
           Icons.file_upload,
           color: Colors.white,
         ),
-        onPressed: () async {
-          FormState formState = _formKey.currentState;
-          if (formState.validate()) {
-            // Close keyboard
-            FocusScope.of(_scaffoldKey.currentContext)
-                .requestFocus(FocusNode());
+        onPressed: fetchingData
+            ? null
+            : () async {
+                FormState formState = _formKey.currentState;
+                if (formState.validate()) {
+                  // Close keyboard
+                  FocusScope.of(_scaffoldKey.currentContext)
+                      .requestFocus(FocusNode());
 
-            // Give visual feedback to the user
-            _scaffoldKey.currentState.showSnackBar(
-              SnackBar(content: Text('Uploading your Book...')),
-            );
-            // create book to upload
-            Book uploadBook = new Book(
-              isbn: isbnController.text,
-              title: titleController.text,
-              author: authorController.text,
-              imagePath: imageLinkController.text,
-            );
-            _scaffoldKey.currentState.hideCurrentSnackBar();
-            widget.booksModel.uploadBook(book: uploadBook).then((uploaded) {
-              if (uploaded) {
-                Navigator.of(context).pop();
-              } else {
-                _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(content: Text("Something went wrong")),
-                );
-              }
-            });
-          }
-        },
+                  // Give visual feedback to the user
+                  _scaffoldKey.currentState.showSnackBar(
+                    SnackBar(content: Text('Uploading your Book...')),
+                  );
+                  // create book to upload
+                  Book uploadBook = new Book(
+                    isbn: isbnController.text,
+                    title: titleController.text,
+                    author: authorController.text,
+                    imagePath: imageLinkController.text,
+                  );
+                  _scaffoldKey.currentState.hideCurrentSnackBar();
+                  setState(() {
+                    fetchingData = true;
+                  });
+                  bool uploadedBook =
+                      await widget.booksModel.uploadBook(book: uploadBook);
+                  if (uploadedBook) {
+                    Navigator.of(context).pop();
+                  } else {
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(content: Text("Something went wrong")),
+                    );
+                  }
+                }
+              },
       ),
     );
   }
