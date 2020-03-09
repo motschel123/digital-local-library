@@ -1,9 +1,7 @@
-import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
 import 'package:digital_local_library/widgets/books_feed.dart';
-import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -59,7 +57,7 @@ class HomeScreen extends StatelessWidget {
         color: Colors.white,
       ),
       onPressed: () async {
-        bool successfullUpload = await Navigator.push(
+        await Navigator.push(
           context,
           MaterialPageRoute(
             builder: (BuildContext context) =>

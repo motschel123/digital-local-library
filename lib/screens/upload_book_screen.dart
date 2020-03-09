@@ -2,7 +2,6 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/consts/Consts.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 
 class UploadBookScreen extends StatefulWidget {
@@ -189,37 +188,45 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   Widget _buildScanIsbnButton() {
     return Center(
       child: RaisedButton(
-        child: Text("Scan your book!"),
-        onPressed: () async {
-          String isbn = "";
-          setState(() {
-            fetchingData = true;
-          });
-          isbn = await BarcodeScanner.scan().catchError((error) {
-            _scaffoldKey.currentState.showSnackBar(
-              const SnackBar(
-                content: const Text("Couldn't get Isbn"),
-              ),
-            );
-            return;
-          });
-          await Book.getByIsbn(isbn).then((Book book) {
+          child: Text("Scan your book!"),
+          onPressed: () async {
+            String isbn = "";
             setState(() {
-              isbnController.text = book.isbn;
-              titleController.text = book.title;
-              authorController.text = book.author;
-              imageLinkController.text = book.imagePath;
-              fetchingData = false;
+              fetchingData = true;
             });
-          }).catchError((error) {
-            _scaffoldKey.currentState.showSnackBar(
-              const SnackBar(
-                content: const Text("Couldn't find book"),
-              ),
+            try {
+              isbn = await BarcodeScanner.scan();
+            } on Exception catch (e) {
+              print(e);
+              _scaffoldKey.currentState.showSnackBar(
+                const SnackBar(
+                  content: const Text("Couldn't get Isbn"),
+                ),
+              );
+              setState(() {
+                fetchingData = false;
+              });
+              return;
+            }
+            await Book.getByIsbn(isbn).then(
+              (Book book) {
+                setState(() {
+                  isbnController.text = book.isbn;
+                  titleController.text = book.title;
+                  authorController.text = book.author;
+                  imageLinkController.text = book.imagePath;
+                  fetchingData = false;
+                });
+              },
+              onError: () {
+                _scaffoldKey.currentState.showSnackBar(
+                  const SnackBar(
+                    content: const Text("Couldn't find book"),
+                  ),
+                );
+              },
             );
-          });
-        },
-      ),
+          }),
     );
   }
 
