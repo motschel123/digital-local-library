@@ -1,7 +1,7 @@
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
-import 'package:digital_local_library/widgets/books_feed.dart';
+import 'package:digital_local_library/widgets/book_feed.dart';
 import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -39,17 +39,6 @@ class HomeScreen extends StatelessWidget {
     );
   }
 
-  Widget _createBookFeed() {
-    return Center(
-      child: ScopedModelDescendant<AppBarModel>(
-        rebuildOnChange: true,
-        builder: (BuildContext context, Widget child, AppBarModel model) {
-          return new BooksFeed(searchText: model.searchText);
-        },
-      ),
-    );
-  }
-
   Widget _createFloatingActionButton({@required BuildContext context}) {
     return FloatingActionButton(
       child: Icon(
@@ -78,7 +67,7 @@ class HomeScreen extends StatelessWidget {
           key: _scaffoldKey,
           appBar: _createAppBar(),
           drawer: HomeDrawer(),
-          body: _createBookFeed(),
+          body: BookFeed(),
           floatingActionButton: _createFloatingActionButton(context: context),
         ),
       ),

@@ -30,6 +30,7 @@ class AppBarModel extends Model {
     if (this._searchIcon.icon == Icons.search) {
       this._searchIcon = new Icon(Icons.close);
       this._appBarTitle = new TextField(
+        autofocus: true,
         controller: _filter,
         decoration: new InputDecoration(
           prefixIcon: new Icon(Icons.search),
