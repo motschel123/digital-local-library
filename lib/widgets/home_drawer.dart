@@ -20,14 +20,20 @@ class _HomeDrawerState extends State<HomeDrawer> {
               ]),
             ),
             child: StreamBuilder(
-              stream: AuthProvider.of(context).currentUser().asStream(),
+              stream: AuthProvider.of(context).currentUserName().asStream(),
               builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                String user = snapshot.hasData ? snapshot.data.toString() : "";
-                return Text(
-                  'Logged in as: $user',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontSize: 24,
+                String userName = snapshot.hasData ? snapshot.data : "";
+                return Center(
+                  child: Column(
+                    children: <Widget>[
+                      Text(
+                        '$userName',
+                        style: TextStyle(
+                          color: Colors.black,
+                          fontSize: 24,
+                        ),
+                      ),
+                    ],
                   ),
                 );
               },

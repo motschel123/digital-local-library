@@ -13,6 +13,7 @@ abstract class BaseAuth {
   );
 
   Future<String> currentUser();
+  Future<String> currentUserName();
   Future<void> signOut();
   Future<String> signInWithGoogle();
 }
@@ -38,6 +39,11 @@ class Auth implements BaseAuth {
   @override
   Future<String> currentUser() async {
     return (await _firebaseAuth.currentUser()).uid;
+  }
+
+  @override
+  Future<String> currentUserName() async {
+    return (await _firebaseAuth.currentUser()).displayName;
   }
 
   @override
