@@ -57,13 +57,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         appBar: AppBar(
           title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
         ),
-        body: fetchingData
-            ? Center(
-                child: Column(children: <Widget>[
-                Text("Fetching your data"),
-                CircularProgressIndicator()
-              ]))
-            : _buildBody(),
+        body: _buildBody(),
         floatingActionButton: _buildUploadFAB());
   }
 
@@ -187,7 +181,9 @@ class UploadBookScreenState extends State<UploadBookScreen> {
 
   Widget _buildScanIsbnButton() {
     return Center(
-      child: RaisedButton(
+      child: fetchingData 
+      ? Padding(padding: EdgeInsets.all(5.0), child: CircularProgressIndicator())
+      : RaisedButton(
           child: Text("Scan your book!"),
           onPressed: () async {
             String isbn = "";
@@ -208,8 +204,8 @@ class UploadBookScreenState extends State<UploadBookScreen> {
               });
               return;
             }
-            await Book.getByIsbn(isbn).then(
-              (Book book) {
+            try {
+              await Book.getByIsbn(isbn).then((Book book) {
                 setState(() {
                   isbnController.text = book.isbn;
                   titleController.text = book.title;
@@ -217,15 +213,19 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                   imageLinkController.text = book.imagePath;
                   fetchingData = false;
                 });
-              },
-              onError: () {
+              });
+            } on Exception catch (e) {
+              setState(() {
+                fetchingData = false;
                 _scaffoldKey.currentState.showSnackBar(
-                  const SnackBar(
-                    content: const Text("Couldn't find book"),
+                  SnackBar(
+                    backgroundColor: Colors.red[800],
+                    content: Text(e.toString()),
+                    duration: Duration(seconds: 2),
                   ),
                 );
-              },
-            );
+              });
+            }
           }),
     );
   }

@@ -6,22 +6,36 @@ import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/widgets/book_card.dart';
 
-class BookFeed extends StatelessWidget {
+class BookFeed extends StatefulWidget {
+  @override
+  _BookFeedState createState() => _BookFeedState();
+}
+
+class _BookFeedState extends State<BookFeed> {
+  List<Book> books = [];
+
+  @override
+  void initState() {
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppBarModel>(
       rebuildOnChange: true,
       builder: (context, child, appBarModel) {
         return ScopedModelDescendant<BooksDatabaseModel>(
-          rebuildOnChange: true,
+          rebuildOnChange: false,
           builder: (context, child, booksModel) {
             return RefreshIndicator(
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: <Widget>[_createFeed(booksModel, appBarModel)],
+                children: <Widget>[_createFeed(books, appBarModel.searchText)],
               ),
               onRefresh: () {
-                booksModel.updateBooks();
+                setState(() {
+                  books = booksModel.books;
+                });
                 return Future<void>(() {});
               },
             );
@@ -31,18 +45,9 @@ class BookFeed extends StatelessWidget {
     );
   }
 
-  Widget _createFeed(BooksDatabaseModel booksModel, AppBarModel appBarModel) {
-    if (booksModel.books.isEmpty) {
-      return Center(
-        child: Text(
-          "Pull down to refresh books!",
-        ),
-      );
-    }
-
-    List<Book> filteredBooks = List.from(booksModel.books);
-    filteredBooks.retainWhere(
-        (Book book) => book.containsString(appBarModel.searchText));
+  Widget _createFeed(List<Book> books, String searchText) {
+    List<Book> filteredBooks = List<Book>.from(books);
+    filteredBooks.retainWhere((Book book) => book.containsString(searchText));
 
     return ExpansionPanelList.radio(
       children: List<ExpansionPanelRadio>.generate(
