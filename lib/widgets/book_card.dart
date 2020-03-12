@@ -15,7 +15,7 @@ class BookCard implements ExpansionPanelRadio {
 
   BookCard({@required this.book, @required this.value}) {
     _canTapOnHeader = true;
-    _isExpanded = false;
+    _isExpanded = true;
     _body = _buildBody();
     _headerBuilder = (BuildContext context, bool isExpaned) => _buildHeader();
   }

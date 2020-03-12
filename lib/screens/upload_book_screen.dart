@@ -3,19 +3,17 @@ import 'package:digital_local_library/consts/Consts.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:flutter/material.dart';
+import 'package:scoped_model/scoped_model.dart';
 
 class UploadBookScreen extends StatefulWidget {
-  final BooksDatabaseModel booksModel;
+  final BuildContext modelContext;
 
-  UploadBookScreen({
-    @required this.booksModel,
-  });
+  UploadBookScreen({@required this.modelContext});
+
 
   @override
   State<StatefulWidget> createState() => UploadBookScreenState();
 }
-
-enum ScreenStates { initial, fetchingBookByISBN }
 
 class UploadBookScreenState extends State<UploadBookScreen> {
   final _formKey = GlobalKey<FormState>();
@@ -25,8 +23,6 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
-
-  ScreenStates currentState = ScreenStates.initial;
 
   bool fetchingData = false;
 
@@ -62,52 +58,40 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   }
 
   Widget _buildBody() {
-    switch (currentState) {
-      case ScreenStates.initial:
-        {
-          return Form(
-            key: _formKey,
-            child: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
+    return Form(
+      key: _formKey,
+      child: Padding(
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          mainAxisAlignment: MainAxisAlignment.start,
+          children: <Widget>[
+            Align(
+              alignment: Alignment.topLeft,
+              child: Container(
+                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                height: 140.0,
+                child: imageLinkController.text == ""
+                    ? null
+                    : Image(
+                        image: NetworkImage(imageLinkController.text),
+                      ),
+              ),
+            ),
+            Expanded(
+              child: Column(
                 children: <Widget>[
-                  Align(
-                    alignment: Alignment.topLeft,
-                    child: Container(
-                      margin:
-                          EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                      height: 140.0,
-                      child: imageLinkController.text == ""
-                          ? null
-                          : Image(
-                              image: NetworkImage(imageLinkController.text),
-                            ),
-                    ),
-                  ),
-                  Expanded(
-                    child: Column(
-                      children: <Widget>[
-                        _buildTitleFormField(),
-                        _buildAuthorFormField(),
-                        _buildIsbnFormField(),
-                        _buildImageLinkFormField(),
-                        _buildScanIsbnButton()
-                      ],
-                    ),
-                  ),
+                  _buildTitleFormField(),
+                  _buildAuthorFormField(),
+                  _buildIsbnFormField(),
+                  _buildImageLinkFormField(),
+                  _buildScanIsbnButton()
                 ],
               ),
             ),
-          );
-        }
-      default:
-        {
-          return Center(
-            child: CircularProgressIndicator(),
-          );
-        }
-    }
+          ],
+        ),
+      ),
+    );
   }
 
   Widget _buildTitleFormField() {
@@ -181,52 +165,53 @@ class UploadBookScreenState extends State<UploadBookScreen> {
 
   Widget _buildScanIsbnButton() {
     return Center(
-      child: fetchingData 
-      ? Padding(padding: EdgeInsets.all(5.0), child: CircularProgressIndicator())
-      : RaisedButton(
-          child: Text("Scan your book!"),
-          onPressed: () async {
-            String isbn = "";
-            setState(() {
-              fetchingData = true;
-            });
-            try {
-              isbn = await BarcodeScanner.scan();
-            } on Exception catch (e) {
-              print(e);
-              _scaffoldKey.currentState.showSnackBar(
-                const SnackBar(
-                  content: const Text("Couldn't get Isbn"),
-                ),
-              );
-              setState(() {
-                fetchingData = false;
-              });
-              return;
-            }
-            try {
-              await Book.getByIsbn(isbn).then((Book book) {
+      child: fetchingData
+          ? Padding(
+              padding: EdgeInsets.all(5.0), child: CircularProgressIndicator())
+          : RaisedButton(
+              child: Text("Scan your book!"),
+              onPressed: () async {
+                String isbn = "";
                 setState(() {
-                  isbnController.text = book.isbn;
-                  titleController.text = book.title;
-                  authorController.text = book.author;
-                  imageLinkController.text = book.imagePath;
-                  fetchingData = false;
+                  fetchingData = true;
                 });
-              });
-            } on Exception catch (e) {
-              setState(() {
-                fetchingData = false;
-                _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(
-                    backgroundColor: Colors.red[800],
-                    content: Text(e.toString()),
-                    duration: Duration(seconds: 2),
-                  ),
-                );
-              });
-            }
-          }),
+                try {
+                  isbn = await BarcodeScanner.scan();
+                } on Exception catch (e) {
+                  print(e);
+                  _scaffoldKey.currentState.showSnackBar(
+                    const SnackBar(
+                      content: const Text("Couldn't get Isbn"),
+                    ),
+                  );
+                  setState(() {
+                    fetchingData = false;
+                  });
+                  return;
+                }
+                try {
+                  await Book.getByIsbn(isbn).then((Book book) {
+                    setState(() {
+                      isbnController.text = book.isbn;
+                      titleController.text = book.title;
+                      authorController.text = book.author;
+                      imageLinkController.text = book.imagePath;
+                      fetchingData = false;
+                    });
+                  });
+                } on Exception catch (e) {
+                  setState(() {
+                    fetchingData = false;
+                    _scaffoldKey.currentState.showSnackBar(
+                      SnackBar(
+                        backgroundColor: Colors.red[800],
+                        content: Text(e.toString()),
+                        duration: Duration(seconds: 2),
+                      ),
+                    );
+                  });
+                }
+              }),
     );
   }
 
@@ -271,8 +256,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
       setState(() {
         fetchingData = true;
       });
-
-      return await widget.booksModel.uploadBook(book: uploadBook);
+      return await ScopedModel.of<BooksDatabaseModel>(widget.modelContext).uploadBook(book: uploadBook);
     }
     return false;
   }

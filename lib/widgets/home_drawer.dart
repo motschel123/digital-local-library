@@ -1,7 +1,13 @@
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 
+enum Screen { ProfileScreen }
+
 class HomeDrawer extends StatefulWidget {
+  final Screen currentScreen;
+
+  HomeDrawer({this.currentScreen});
+
   @override
   State<StatefulWidget> createState() => _HomeDrawerState();
 }
@@ -40,12 +46,18 @@ class _HomeDrawerState extends State<HomeDrawer> {
             ),
           ),
           RaisedButton(
-            child: Text("Friends"),
-            onPressed: () {},
+            child: Text("Profile"),
+            onPressed: () {
+              Navigator.pop(context);
+              Navigator.pushNamed(context, '/profile');
+            },
           ),
           Container(
             child: MaterialButton(
-              onPressed: () => AuthProvider.of(context).signOut(),
+              onPressed: () {
+                Navigator.pop(context);
+                AuthProvider.of(context).signOut();
+              },
               child: Text("Sign out"),
             ),
           ),

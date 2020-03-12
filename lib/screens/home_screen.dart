@@ -1,6 +1,6 @@
 import 'package:digital_local_library/models/appbar_model.dart';
-import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/screens/upload_book_screen.dart';
+import 'package:digital_local_library/sign_in/auth.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:digital_local_library/widgets/book_feed.dart';
 import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
@@ -8,9 +8,6 @@ import 'package:scoped_model/scoped_model.dart';
 
 class HomeScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
-
-  final BooksDatabaseModel booksModel = BooksDatabaseModel();
-  final AppBarModel searchBarModel = AppBarModel();
 
   HomeScreen({Key key}) : super(key: key);
 
@@ -45,32 +42,20 @@ class HomeScreen extends StatelessWidget {
         Icons.add,
         color: Colors.white,
       ),
-      onPressed: () async {
-        await Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (BuildContext context) =>
-                UploadBookScreen(booksModel: booksModel),
-          ),
-        );
+      onPressed: () {
+        Navigator.pushNamed(context, '/upload');
       },
     );
   }
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<AppBarModel>(
-      model: searchBarModel,
-      child: ScopedModel<BooksDatabaseModel>(
-        model: booksModel,
-        child: Scaffold(
-          key: _scaffoldKey,
-          appBar: _createAppBar(),
-          drawer: HomeDrawer(),
-          body: BookFeed(),
-          floatingActionButton: _createFloatingActionButton(context: context),
-        ),
-      ),
+    return Scaffold(
+      key: _scaffoldKey,
+      appBar: _createAppBar(),
+      drawer: HomeDrawer(),
+      body: BookFeed(),
+      floatingActionButton: _createFloatingActionButton(context: context),
     );
   }
 }
