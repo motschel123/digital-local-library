@@ -6,7 +6,7 @@ class BookCard implements ExpansionPanelRadio {
   final Book book;
   final Object value;
 
-  final GlobalKey key;
+  final UniqueKey key;
 
   ExpansionPanelHeaderBuilder _headerBuilder;
   Widget _body;

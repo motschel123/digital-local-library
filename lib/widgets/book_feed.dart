@@ -13,8 +13,6 @@ class BookFeed extends StatefulWidget {
 
 class _BookFeedState extends State<BookFeed> {
   List<Book> books = [];
-  String searchText = "";
-  // TODO: FIX THIS SHIT
 
   @override
   void initState() {
@@ -23,45 +21,44 @@ class _BookFeedState extends State<BookFeed> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModelDescendant<BooksDatabaseModel>(
-      rebuildOnChange: false,
-      builder: (context, child, booksModel) {
-        books = booksModel.books;
-        return RefreshIndicator(
-          child: ListView(
-            physics: const AlwaysScrollableScrollPhysics(),
-            children: <Widget>[
-              _createFeed(),
-            ],
-          ),
-          onRefresh: () {
-            setState(() {
-              books = booksModel.books;
-            });
-            return Future<void>(() {});
+    return ScopedModelDescendant<AppBarModel>(
+      rebuildOnChange: true,
+      builder: (context, child, appBarModel) {
+        return ScopedModelDescendant<BooksDatabaseModel>(
+          rebuildOnChange: false,
+          builder: (context, child, booksModel) {
+            books = booksModel.books;
+            return RefreshIndicator(
+              child: ListView(
+                physics: const AlwaysScrollableScrollPhysics(),
+                children: <Widget>[_createFeed(books, appBarModel.searchText)],
+              ),
+              onRefresh: () {
+                setState(() {
+                  books = booksModel.books;
+                });
+                return Future<void>(() {});
+              },
+            );
           },
         );
       },
     );
   }
 
-  Widget _createFeed() {
+  Widget _createFeed(List<Book> books, String searchText) {
     List<Book> filteredBooks = List<Book>.from(books);
-    if (books.length == 0) {
-      return LinearProgressIndicator();
-    } else {
-      filteredBooks.retainWhere((Book b) {
-        (b.title + " " + b.author).toLowerCase().contains(searchText.toLowerCase());
-      });
-    }
+    filteredBooks.retainWhere((Book book) => book.containsString(searchText));
+
     return ExpansionPanelList.radio(
-      children: filteredBooks.map((Book b) {
-        return new BookCard(
-          key: GlobalKey(),
-          book: b,
-          value: b.isbn,
-        );
-      }).toList(),
+      key: UniqueKey(),
+      children: List<ExpansionPanelRadio>.generate(
+        filteredBooks.length,
+        (int index) {
+          Book tempBook = filteredBooks[index];
+          return BookCard(book: tempBook, value: index);
+        },
+      ),
     );
   }
 }
