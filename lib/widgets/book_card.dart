@@ -4,18 +4,18 @@ import 'package:digital_local_library/data/book.dart';
 
 class BookCard implements ExpansionPanelRadio {
   final Book book;
-  
   final Object value;
+
+  final GlobalKey key;
 
   ExpansionPanelHeaderBuilder _headerBuilder;
   Widget _body;
   bool _isExpanded;
   bool _canTapOnHeader;
-  
 
-  BookCard({@required this.book, @required this.value}) {
+  BookCard({this.key, @required this.book, @required this.value}) {
     _canTapOnHeader = true;
-    _isExpanded = true;
+    _isExpanded = false;
     _body = _buildBody();
     _headerBuilder = (BuildContext context, bool isExpaned) => _buildHeader();
   }
@@ -28,8 +28,8 @@ class BookCard implements ExpansionPanelRadio {
         children: <Widget>[
           Padding(
             padding: EdgeInsets.only(
-                left: 16.0,
-              ),
+              left: 16.0,
+            ),
             child: Container(
               alignment: FractionalOffset.bottomCenter,
               child: Text("from Max Mustermann"),

@@ -1,6 +1,4 @@
 import 'package:digital_local_library/models/appbar_model.dart';
-import 'package:digital_local_library/sign_in/auth.dart';
-import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:digital_local_library/widgets/book_feed.dart';
 import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';

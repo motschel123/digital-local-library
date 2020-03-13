@@ -13,38 +13,12 @@ class BookFeed extends StatefulWidget {
 
 class _BookFeedState extends State<BookFeed> {
   List<Book> books = [];
-
+  String searchText = "";
   // TODO: FIX THIS SHIT
-  List<ExpansionPanelRadio> bookPanels = [];
-
-  List<ExpansionPanelRadio> getBookPanels(List<Book> books, String search) {
-    List<Book> filteredBooks = List<Book>.from(books);
-    filteredBooks.retainWhere((Book book) => book.containsString(search));
-
-    return new List.unmodifiable(
-        filteredBooks.map<ExpansionPanelRadio>((Book book) {
-      return new BookCard(
-        book: book,
-        value: filteredBooks.indexOf(book),
-      );
-    }).toList());
-  }
-
-  _BookFeedState(){
-    bookPanels = getBookPanels(books, "");
-  }
 
   @override
   void initState() {
     super.initState();
-
-    AppBarModel appBarModel = ScopedModel.of<AppBarModel>(context);
-
-    appBarModel.addListener(() {
-      setState(() {
-        bookPanels = getBookPanels(books, appBarModel.searchText);
-      });
-    });
   }
 
   @override
@@ -57,9 +31,7 @@ class _BookFeedState extends State<BookFeed> {
           child: ListView(
             physics: const AlwaysScrollableScrollPhysics(),
             children: <Widget>[
-              _createFeed(
-                books,
-              ),
+              _createFeed(),
             ],
           ),
           onRefresh: () {
@@ -73,12 +45,23 @@ class _BookFeedState extends State<BookFeed> {
     );
   }
 
-  Widget _createFeed(List<Book> books) {
-    if (bookPanels.length == 0) {
+  Widget _createFeed() {
+    List<Book> filteredBooks = List<Book>.from(books);
+    if (books.length == 0) {
       return LinearProgressIndicator();
+    } else {
+      filteredBooks.retainWhere((Book b) {
+        (b.title + " " + b.author).toLowerCase().contains(searchText.toLowerCase());
+      });
     }
     return ExpansionPanelList.radio(
-      children: bookPanels,
+      children: filteredBooks.map((Book b) {
+        return new BookCard(
+          key: GlobalKey(),
+          book: b,
+          value: b.isbn,
+        );
+      }).toList(),
     );
   }
 }
