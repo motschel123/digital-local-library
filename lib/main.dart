@@ -34,7 +34,7 @@ class MyApp extends StatelessWidget {
               '/upload': (context) =>
                   UploadBookScreen(modelContext: context)
             },
-            initialRoute: '{',
+            initialRoute: '/',
           ),
         ),
       ),
