@@ -2,6 +2,7 @@ import 'package:barcode_scan/barcode_scan.dart';
 import 'package:digital_local_library/consts/Consts.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -9,7 +10,6 @@ class UploadBookScreen extends StatefulWidget {
   final BuildContext modelContext;
 
   UploadBookScreen({@required this.modelContext});
-
 
   @override
   State<StatefulWidget> createState() => UploadBookScreenState();
@@ -54,7 +54,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
           title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
         ),
         body: _buildBody(),
-        floatingActionButton: _buildUploadFAB());
+        floatingActionButton: _buildUploadFAB(context));
   }
 
   Widget _buildBody() {
@@ -177,7 +177,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                 });
                 try {
                   isbn = await BarcodeScanner.scan();
-                } on Exception catch (e) {
+                } catch (e) {
                   print(e);
                   _scaffoldKey.currentState.showSnackBar(
                     const SnackBar(
@@ -196,6 +196,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                       titleController.text = book.title;
                       authorController.text = book.author;
                       imageLinkController.text = book.imagePath;
+                      _formKey.currentState.validate();
                       fetchingData = false;
                     });
                   });
@@ -215,7 +216,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
     );
   }
 
-  Widget _buildUploadFAB() {
+  Widget _buildUploadFAB(BuildContext context) {
     return FloatingActionButton(
       child: Icon(
         Icons.file_upload,
@@ -224,18 +225,25 @@ class UploadBookScreenState extends State<UploadBookScreen> {
       onPressed: fetchingData
           ? null
           : () async {
-              if (await _uploadBook()) {
+              setState(() {
+                fetchingData = true;
+              });
+              if (await _uploadBook(
+                  await AuthProvider.of(context).currentUser())) {
                 Navigator.of(context).pop(true);
               } else {
                 _scaffoldKey.currentState.showSnackBar(
                   SnackBar(content: Text("Something went wrong")),
                 );
               }
+              setState(() {
+                fetchingData = false;
+              });
             },
     );
   }
 
-  Future<bool> _uploadBook() async {
+  Future<bool> _uploadBook(String uid) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       // Close keyboard
@@ -251,12 +259,16 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         title: titleController.text,
         author: authorController.text,
         imagePath: imageLinkController.text,
+        uid: uid,
       );
       _scaffoldKey.currentState.hideCurrentSnackBar();
       setState(() {
         fetchingData = true;
       });
-      return await ScopedModel.of<BooksDatabaseModel>(widget.modelContext).uploadBook(book: uploadBook);
+      return await ScopedModel.of<BooksDatabaseModel>(widget.modelContext)
+          .uploadBook(
+              book: uploadBook,
+              uid: await AuthProvider.of(context).currentUser());
     }
     return false;
   }

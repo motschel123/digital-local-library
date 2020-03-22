@@ -7,13 +7,21 @@ class Book {
   final String author;
   final String imagePath;
   final String isbn;
+  String _uid = "";
 
   Book(
-      {@required this.isbn, @required this.title, @required this.author, @required this.imagePath});
+      {@required this.isbn,
+      @required this.title,
+      @required this.author,
+      @required this.imagePath,
+      String uid}) {
+    _uid = uid;
+  }
 
   static Future<Book> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
-    String bookUrl = Uri.encodeFull("https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn);
+    String bookUrl = Uri.encodeFull(
+        "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn);
     var res = await http.get(bookUrl);
 
     if (res.statusCode == 200) {
@@ -24,9 +32,11 @@ class Book {
         var bookData = jsonData['items'][0]['volumeInfo'];
 
         String _bookTitle = bookData['title'];
-        String _bookAuthor = bookData.containsKey('authors') ? bookData['authors'][0] : "";
-        String _bookThumbnail =
-            bookData.containsKey('imageLinks') ? bookData['imageLinks']['thumbnail'] : "";
+        String _bookAuthor =
+            bookData.containsKey('authors') ? bookData['authors'][0] : "";
+        String _bookThumbnail = bookData.containsKey('imageLinks')
+            ? bookData['imageLinks']['thumbnail']
+            : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
 
         return Book(
@@ -44,7 +54,11 @@ class Book {
   }
 
   bool containsString(String str) {
-    if (str.isEmpty || (title + " " + author).toLowerCase().replaceAll(" ", "").contains(str.toLowerCase().replaceAll(" ", ""))) {
+    if (str.isEmpty ||
+        (title + " " + author)
+            .toLowerCase()
+            .replaceAll(" ", "")
+            .contains(str.toLowerCase().replaceAll(" ", ""))) {
       return true;
     }
     return false;
@@ -89,10 +103,12 @@ class Book {
       sum = sum + int.parse(chars[i]) * (i + 1);
     }
     print(sum);
-    int mod = sum % 21;
+    int mod = sum % 11;
     if (mod == 0) {
       return true;
     }
     return false;
   }
+
+  String get uid => _uid;
 }

@@ -1,4 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:digital_local_library/data/user.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
 
@@ -32,7 +33,12 @@ class BookCard implements ExpansionPanelRadio {
             ),
             child: Container(
               alignment: FractionalOffset.bottomCenter,
-              child: Text("from Max Mustermann"),
+              child: StreamBuilder<String>(
+                stream: User.nickNameFromUid(book.uid).asStream(),
+                builder: (BuildContext context, AsyncSnapshot<String> name) {
+                  return Text("from: " + "${name.data}");
+                },
+              ),
             ),
           ),
           Container(
@@ -80,7 +86,7 @@ class BookCard implements ExpansionPanelRadio {
                     ),
                   ),
                   Text(
-                    book.author,
+                    "by ${book.author}",
                     textAlign: TextAlign.center,
                     style: TextStyle(
                       color: Colors.black54,

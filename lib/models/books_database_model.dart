@@ -19,7 +19,8 @@ class BooksDatabaseModel extends Model {
                 isbn: dSnap.data['isbn'].toString(),
                 title: dSnap.data['title'].toString(),
                 author: dSnap.data['author'].toString(),
-                imagePath: dSnap.data['imagePath'].toString());
+                imagePath: dSnap.data['imagePath'].toString(),
+                uid: dSnap.data['uid'].toString());
           })
           .toList()
           .reversed
@@ -31,13 +32,18 @@ class BooksDatabaseModel extends Model {
     notifyListeners();
   }
 
-  Future<bool> uploadBook({@required Book book}) async {
-    await Firestore.instance.collection("books").add({
-      "author": book.author,
-      "title": book.title,
-      "isbn": book.isbn,
-      "imagePath": book.imagePath,
-    });
+  Future<bool> uploadBook({@required Book book, @required String uid}) async {
+    try {
+      await Firestore.instance.collection("books").add({
+        'author': book.author,
+        'title': book.title,
+        'isbn': book.isbn,
+        'imagePath': book.imagePath,
+        'uid': uid,
+      });
+    } catch (e) {
+      return false;
+    }
     return true;
   }
 }
