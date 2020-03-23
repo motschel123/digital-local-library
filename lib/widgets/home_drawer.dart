@@ -16,43 +16,51 @@ class _HomeDrawerState extends State<HomeDrawer> {
   @override
   Widget build(BuildContext context) {
     return Drawer(
-      child: ListView(
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: <Widget>[
-          DrawerHeader(
-            decoration: BoxDecoration(
-              gradient: LinearGradient(colors: <Color>[
-                Theme.of(context).primaryColor,
-                Theme.of(context).primaryColor.withOpacity(0.6)
-              ]),
-            ),
-            child: StreamBuilder(
-              stream: AuthProvider.of(context).currentUserName().asStream(),
-              builder: (BuildContext context, AsyncSnapshot<String> snapshot) {
-                String userName = snapshot.hasData ? snapshot.data : "";
-                return Center(
-                  child: Column(
-                    children: <Widget>[
-                      Text(
-                        '$userName',
-                        style: TextStyle(
-                          color: Colors.black,
-                          fontSize: 24,
-                        ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.stretch,
+            children: <Widget>[
+              DrawerHeader(
+                decoration: BoxDecoration(
+                  gradient: LinearGradient(colors: <Color>[
+                    Theme.of(context).primaryColor,
+                    Theme.of(context).primaryColor.withOpacity(0.6)
+                  ]),
+                ),
+                child: StreamBuilder(
+                  stream: AuthProvider.of(context).currentUserName().asStream(),
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    String userName = snapshot.hasData ? snapshot.data : "";
+                    return Center(
+                      child: Column(
+                        children: <Widget>[
+                          Text(
+                            '$userName',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontSize: 24,
+                            ),
+                          ),
+                        ],
                       ),
-                    ],
-                  ),
-                );
-              },
-            ),
+                    );
+                  },
+                ),
+              ),
+              RaisedButton(
+                child: Text("Profile"),
+                onPressed: () {
+                  Navigator.pop(context);
+                  Navigator.pushNamed(context, '/profile');
+                },
+              ),
+            ],
           ),
-          RaisedButton(
-            child: Text("Profile"),
-            onPressed: () {
-              Navigator.pop(context);
-              Navigator.pushNamed(context, '/profile');
-            },
-          ),
-          Container(
+          Align(
+            alignment: Alignment.bottomCenter,
             child: MaterialButton(
               onPressed: () {
                 Navigator.pop(context);

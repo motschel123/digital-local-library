@@ -4,14 +4,14 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
-  final Stream<QuerySnapshot> _stream =
-      Firestore.instance.collection("books").snapshots();
+  Stream<QuerySnapshot> _stream;
 
   List<Book> _books = [];
 
   List<Book> get books => _books;
 
   BooksDatabaseModel() {
+    _stream = Firestore.instance.collection("books").snapshots();
     _stream.listen((querySnapshot) {
       _books = querySnapshot.documents
           .map((dSnap) {
