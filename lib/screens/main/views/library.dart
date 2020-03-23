@@ -4,22 +4,15 @@ import 'package:digital_local_library/widgets/home_drawer.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class HomeScreen extends StatelessWidget {
-  final GlobalKey<ScaffoldState> _scaffoldKey = new GlobalKey<ScaffoldState>();
+class LibraryView extends StatelessWidget {
 
-  HomeScreen({Key key}) : super(key: key);
+  LibraryView({Key key}) : super(key: key);
 
   Widget _createAppBar() {
     return AppBar(
       title: ScopedModelDescendant<AppBarModel>(
         builder: (context, child, model) {
           return model.appBarTitle;
-        },
-      ),
-      leading: new IconButton(
-        icon: Icon(Icons.menu),
-        onPressed: () {
-          _scaffoldKey.currentState.openDrawer();
         },
       ),
       actions: <Widget>[
@@ -49,7 +42,6 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      key: _scaffoldKey,
       appBar: _createAppBar(),
       drawer: HomeDrawer(),
       body: BookFeed(),
