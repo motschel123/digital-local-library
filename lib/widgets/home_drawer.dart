@@ -86,7 +86,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                               child: Text("Sign out"),
                             );
                     }
-                    return CircularProgressIndicator();
+                    return Container();
                   })),
         ],
       ),

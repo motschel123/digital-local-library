@@ -2,6 +2,8 @@ import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
+enum ScreenState { sign_in, sign_up }
+
 class SignInEmailScreen extends StatefulWidget {
   @override
   _SignInEmailScreenState createState() => _SignInEmailScreenState();
@@ -14,6 +16,8 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
   TextEditingController _emailCtr;
   TextEditingController _passwordCtr;
   TextEditingController _usernameCtr;
+
+  ScreenState currentState = ScreenState.sign_in;
 
   @override
   void initState() {
@@ -32,46 +36,21 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
-            _buildSignInForm(),
-            Padding(
-              padding: EdgeInsets.all(15),
-              child: MaterialButton(
-                child: Text("Sign in"),
-                onPressed: () async {
-                  if (_formKey.currentState.validate()) {
-                    try {
-                      await AuthProvider.of(context).signInWithEmailAndPassword(
-                          _emailCtr.text, _passwordCtr.text);
-                    } on PlatformException catch (e) {
-                      String error = e.code;
-                      switch (error) {
-                        case "ERROR_INVALID_EMAIL":
-                          break;
-                        case "ERROR_WRONG_PASSWORD":
-                          break;
-                        case "ERROR_USER_NOT_FOUND":
-                          break;
-                        case "ERROR_TOO_MANY_REQUESTS":
-                          break;
-                        case "ERROR_OPERATION_NOT_ALLOWED":
-                          break;
-                        default:
-                      }
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("${e.message}")));
-                    } catch (e) {
-                      _scaffoldKey.currentState.showSnackBar(SnackBar(content: Text("An error Occured")));
-                    }
-                  }
-                },
-              ),
-            ),
+            _buildForm(),
+            currentState == ScreenState.sign_in
+                ? _buildSignInButton()
+                : Container(),
+            _buildSignUpButton(),
+            currentState == ScreenState.sign_up
+                ? _buildSignInButton()
+                : Container(),
           ],
         ),
       ),
     );
   }
 
-  Widget _buildSignInForm() {
+  Widget _buildForm() {
     return Form(
       key: _formKey,
       child: Container(
@@ -80,7 +59,12 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
           children: <Widget>[
             _emailFormField(),
             _passwordFormField(),
-            _usernameFormField(),
+            currentState == ScreenState.sign_up
+                ? _repeatPasswordFormField()
+                : Container(),
+            currentState == ScreenState.sign_up
+                ? _usernameFormField()
+                : Container(),
           ],
         ),
       ),
@@ -122,6 +106,24 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
     );
   }
 
+  TextFormField _repeatPasswordFormField() {
+    return TextFormField(
+      controller: _passwordCtr,
+      decoration: InputDecoration(
+        hintText: "Repeat your password",
+        prefixText: "Reapeat Password",
+      ),
+      obscureText: true,
+      textAlign: TextAlign.right,
+      validator: (value) {
+        if (value != _passwordCtr.text) {
+          return 'Passwords don\'t match';
+        }
+        return null;
+      },
+    );
+  }
+
   TextFormField _usernameFormField() {
     return TextFormField(
       controller: _usernameCtr,
@@ -138,6 +140,73 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
         return null;
       },
     );
+  }
+
+  Widget _buildSignInButton() {
+    return Padding(
+      padding: EdgeInsets.all(15),
+      child: MaterialButton(
+        child: Text("Sign in"),
+        onPressed: () {
+          _signIn();
+        },
+      ),
+    );
+  }
+
+  Widget _buildSignUpButton() {
+    return Padding(
+      padding: EdgeInsets.all(15),
+      child: MaterialButton(
+          child: Text("Sign up"),
+          onPressed: () {
+            _signUp();
+          }),
+    );
+  }
+
+  void _signIn() async {
+    if (currentState == ScreenState.sign_up) {
+      setState(() {
+        currentState = ScreenState.sign_in;
+      });
+      return;
+    }
+    if (_formKey.currentState.validate()) {
+      try {
+        await AuthProvider.of(context)
+            .signInWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
+      } on PlatformException catch (e) {
+        String error = e.code;
+        switch (error) {
+          case "ERROR_INVALID_EMAIL":
+            break;
+          case "ERROR_WRONG_PASSWORD":
+            break;
+          case "ERROR_USER_NOT_FOUND":
+            break;
+          case "ERROR_TOO_MANY_REQUESTS":
+            break;
+          case "ERROR_OPERATION_NOT_ALLOWED":
+            break;
+          default:
+        }
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("${e.message}")));
+      } catch (e) {
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("An error Occured")));
+      }
+    }
+  }
+
+  void _signUp() async {
+    if (currentState == ScreenState.sign_in) {
+      setState(() {
+        currentState = ScreenState.sign_up;
+      });
+      return;
+    }
   }
 
   bool _validEmail(String email) {

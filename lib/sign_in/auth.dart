@@ -1,4 +1,5 @@
 import 'package:firebase_auth/firebase_auth.dart';
+import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuth {
@@ -53,6 +54,7 @@ class Auth implements BaseAuth {
   @override
   Future<AuthResult> signInWithGoogle() async {
     final GoogleSignInAccount account = await _googleSignIn.signIn();
+    if(account == null) throw PlatformException(code: GoogleSignIn.kSignInFailedError, message: "Signing in with google failed");
     final GoogleSignInAuthentication _auth = await account.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       idToken: _auth.idToken,

@@ -3,8 +3,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
+import 'package:flutter/services.dart';
 
 class SignInScreen extends StatelessWidget {
+  final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
   final bool anonymousSignIn;
 
   SignInScreen({Key key, @required this.anonymousSignIn}) : super(key: key);
@@ -12,6 +14,7 @@ class SignInScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: _scaffoldKey,
       body: Center(
         child: Column(
           mainAxisAlignment: MainAxisAlignment.center,
@@ -21,8 +24,14 @@ class SignInScreen extends StatelessWidget {
               onPressed: () async {
                 try {
                   await AuthProvider.of(context).signInWithGoogle();
-                } catch (e) {
-                  print(e);
+                  Navigator.popUntil(
+                    context,
+                    ModalRoute.withName('/home'),
+                  );
+                } on PlatformException catch (e) {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text(e.message),
+                  ));
                 }
               },
               text: "Sign in with google",

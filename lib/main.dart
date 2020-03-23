@@ -31,14 +31,14 @@ class MyApp extends StatelessWidget {
               accentColor: Colors.greenAccent,
             ),
             routes: {
-              '/sign_in': (context) => LandingScreen(),
+              '/home': (context) => LandingScreen(),
               '/sign_in/email': (context) => SignInEmailScreen(),
               '/forced_sign_in': (context) => SignInScreen(anonymousSignIn: false),
               '/profile': (context) => ProfileScreen(),
               '/upload': (context) =>
                   UploadBookScreen(modelContext: context)
             },
-            initialRoute: '/sign_in',
+            initialRoute: '/home',
           ),
         ),
       ),
