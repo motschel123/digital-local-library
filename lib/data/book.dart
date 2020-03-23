@@ -7,6 +7,8 @@ class Book {
   final String author;
   final String imagePath;
   final String isbn;
+
+  String _description = "";
   String _uid = "";
 
   Book(
@@ -14,9 +16,13 @@ class Book {
       @required this.title,
       @required this.author,
       @required this.imagePath,
-      String uid}) {
+      String uid,
+      String description}) {
     _uid = uid;
+    _description = description;
   }
+
+  String get description => _description;
 
   static Future<Book> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
@@ -37,12 +43,16 @@ class Book {
         String _bookThumbnail = bookData.containsKey('imageLinks')
             ? bookData['imageLinks']['thumbnail']
             : "";
+        String _bookDescription = bookData.containsKey('description') ? bookData['description'] : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
+
+        print('Book description: ' + _bookDescription);
 
         return Book(
           title: _bookTitle,
           author: _bookAuthor,
           imagePath: _bookThumbnail,
+          description: _bookDescription,
           isbn: _bookIsbn,
         );
       } else {

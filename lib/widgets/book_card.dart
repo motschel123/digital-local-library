@@ -21,33 +21,58 @@ class BookCard implements ExpansionPanelRadio {
     _headerBuilder = (BuildContext context, bool isExpaned) => _buildHeader();
   }
 
+  Widget _buildBookDescription() {
+    print(book.description);
+    return Padding(
+      padding: const EdgeInsets.all(16.0),
+      child: new RichText(
+        text: TextSpan(
+          text: 'Description: ',
+          style: TextStyle(
+            fontWeight: FontWeight.bold,
+            color: Colors.black,
+          ),
+          children: [
+            TextSpan(text: book.description, style: TextStyle(fontWeight: FontWeight.normal)),
+          ],
+        ),
+      ),
+    );
+  }
+
   Widget _buildBody() {
     return Container(
       color: Colors.grey[200],
-      child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
-          Padding(
-            padding: EdgeInsets.only(
-              left: 16.0,
-            ),
-            child: Container(
-              alignment: FractionalOffset.bottomCenter,
-              child: StreamBuilder<String>(
-                stream: User.nickNameFromUid(book.uid).asStream(),
-                builder: (BuildContext context, AsyncSnapshot<String> name) {
-                  return Text("from: " + "${name.data}");
-                },
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: <Widget>[
+              Padding(
+                padding: EdgeInsets.only(
+                  left: 16.0,
+                ),
+                child: Container(
+                  alignment: FractionalOffset.bottomCenter,
+                  child: StreamBuilder<String>(
+                    stream: User.nickNameFromUid(book.uid).asStream(),
+                    builder: (BuildContext context, AsyncSnapshot<String> name) {
+                      return Text("from: " + "${name.data}");
+                    },
+                  ),
+                ),
               ),
-            ),
+              Container(
+                alignment: FractionalOffset.centerRight,
+                child: FlatButton(
+                  onPressed: () {},
+                  child: Text("Message"),
+                ),
+              )
+            ],
           ),
-          Container(
-            alignment: FractionalOffset.centerRight,
-            child: FlatButton(
-              onPressed: () {},
-              child: Text("Message"),
-            ),
-          )
+          if (book.description != "") _buildBookDescription(),
         ],
       ),
     );

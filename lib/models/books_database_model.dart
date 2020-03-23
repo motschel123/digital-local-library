@@ -4,8 +4,7 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
-  final Stream<QuerySnapshot> _stream =
-      Firestore.instance.collection("books").snapshots();
+  final Stream<QuerySnapshot> _stream = Firestore.instance.collection("books").snapshots();
 
   List<Book> _books = [];
 
@@ -15,11 +14,16 @@ class BooksDatabaseModel extends Model {
     _stream.listen((querySnapshot) {
       _books = querySnapshot.documents
           .map((dSnap) {
+            // Description is an optional property
+            String bookDescription =
+                dSnap.data.containsKey('description') ? dSnap.data['description'] : "";
+
             return new Book(
                 isbn: dSnap.data['isbn'].toString(),
                 title: dSnap.data['title'].toString(),
                 author: dSnap.data['author'].toString(),
                 imagePath: dSnap.data['imagePath'].toString(),
+                description: bookDescription,
                 uid: dSnap.data['uid'].toString());
           })
           .toList()
@@ -39,6 +43,7 @@ class BooksDatabaseModel extends Model {
         'title': book.title,
         'isbn': book.isbn,
         'imagePath': book.imagePath,
+        'description': book.description,
         'uid': uid,
       });
     } catch (e) {
