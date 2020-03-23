@@ -2,23 +2,20 @@ import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
 
-class Book {
+class BookBase {
   final String title;
   final String author;
   final String imagePath;
   final String isbn;
-  String _uid = "";
 
-  Book(
-      {@required this.isbn,
-      @required this.title,
-      @required this.author,
-      @required this.imagePath,
-      String uid}) {
-    _uid = uid;
-  }
+  BookBase({
+    @required this.isbn,
+    @required this.title,
+    @required this.author,
+    @required this.imagePath,
+  });
 
-  static Future<Book> getByIsbn(String isbn) async {
+  static Future<BookBase> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
     String bookUrl = Uri.encodeFull(
         "https://www.googleapis.com/books/v1/volumes?q=isbn:" + isbn);
@@ -39,7 +36,7 @@ class Book {
             : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
 
-        return Book(
+        return BookBase(
           title: _bookTitle,
           author: _bookAuthor,
           imagePath: _bookThumbnail,
@@ -52,6 +49,22 @@ class Book {
       throw Exception("Failed to load book from API");
     }
   }
+}
+
+class Book extends BookBase {
+  final String title;
+  final String author;
+  final String imagePath;
+  final String isbn;
+  final String uid;
+
+  Book({
+    @required this.isbn,
+    @required this.title,
+    @required this.author,
+    @required this.imagePath,
+    @required this.uid,
+  });
 
   bool containsString(String str) {
     if (str.isEmpty ||
@@ -109,6 +122,4 @@ class Book {
     }
     return false;
   }
-
-  String get uid => _uid;
 }
