@@ -12,10 +12,10 @@ abstract class BaseAuth {
     String password,
   );
 
-  Future<String> currentUser();
-  Future<String> currentUserName();
+  Future<FirebaseUser> currentUser();
   Future<void> signOut();
-  Future<String> signInWithGoogle();
+  Future<AuthResult> signInWithGoogle();
+  Future<AuthResult> signInAnonymously();
 }
 
 class Auth implements BaseAuth {
@@ -37,13 +37,8 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<String> currentUser() async {
-    return (await _firebaseAuth.currentUser()).uid;
-  }
-
-  @override
-  Future<String> currentUserName() async {
-    return (await _firebaseAuth.currentUser()).displayName;
+  Future<FirebaseUser> currentUser() async {
+    return await _firebaseAuth.currentUser();
   }
 
   @override
@@ -56,14 +51,19 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<String> signInWithGoogle() async {
+  Future<AuthResult> signInWithGoogle() async {
     final GoogleSignInAccount account = await _googleSignIn.signIn();
     final GoogleSignInAuthentication _auth = await account.authentication;
     final AuthCredential credential = GoogleAuthProvider.getCredential(
       idToken: _auth.idToken,
       accessToken: _auth.accessToken,
     );
-    return (await _firebaseAuth.signInWithCredential(credential)).user.uid;
+    return await _firebaseAuth.signInWithCredential(credential);
+  }
+
+  @override
+  Future<AuthResult> signInAnonymously() async {
+    return await _firebaseAuth.signInAnonymously();
   }
 
   @override

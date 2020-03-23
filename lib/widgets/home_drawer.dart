@@ -1,4 +1,5 @@
 import 'package:digital_local_library/sign_in/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum Screen { ProfileScreen }
@@ -29,11 +30,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     Theme.of(context).primaryColor.withOpacity(0.6)
                   ]),
                 ),
-                child: StreamBuilder(
-                  stream: AuthProvider.of(context).currentUserName().asStream(),
+                child: StreamBuilder<FirebaseUser>(
+                  stream: AuthProvider.of(context).currentUser().asStream(),
                   builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    String userName = snapshot.hasData ? snapshot.data : "";
+                      (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
+                    String userName = snapshot.hasData ? snapshot.data.displayName : "";
                     return Center(
                       child: Column(
                         children: <Widget>[
@@ -60,15 +61,29 @@ class _HomeDrawerState extends State<HomeDrawer> {
             ],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-                AuthProvider.of(context).signOut();
-              },
-              child: Text("Sign out"),
-            ),
-          ),
+              alignment: Alignment.bottomCenter,
+              child: StreamBuilder<FirebaseUser>(
+                  stream: AuthProvider.of(context).currentUser().asStream(),
+                  builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+                    if (snapshot.hasData) {
+                      return snapshot.data.isAnonymous
+                          ? MaterialButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                Navigator.pushNamed(context, '/forced_sign_in');
+                              },
+                              child: Text("Sign in"),
+                            )
+                          : MaterialButton(
+                              onPressed: () {
+                                Navigator.pop(context);
+                                AuthProvider.of(context).signOut();
+                              },
+                              child: Text("Sign out"),
+                            );
+                    }
+                    return CircularProgressIndicator();
+                  })),
         ],
       ),
     );

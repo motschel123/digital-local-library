@@ -1,7 +1,7 @@
 import 'package:digital_local_library/screens/home_screen.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
-import 'package:digital_local_library/sign_in/sign_in_screen.dart';
+import 'package:digital_local_library/screens/sign_in/sign_in_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -14,7 +14,7 @@ class LandingScreen extends StatelessWidget {
         builder: (context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final bool loggedIn = snapshot.hasData;
-            return loggedIn ? HomeScreen() : SignInScreen();
+            return loggedIn ? HomeScreen() : SignInScreen(anonymousSignIn: true);
           }
           return CircularProgressIndicator();
         });
