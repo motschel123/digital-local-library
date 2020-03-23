@@ -32,9 +32,13 @@ class _HomeDrawerState extends State<HomeDrawer> {
                 ),
                 child: StreamBuilder<FirebaseUser>(
                   stream: AuthProvider.of(context).currentUser().asStream(),
-                  builder:
-                      (BuildContext context, AsyncSnapshot<FirebaseUser> snapshot) {
-                    String userName = snapshot.hasData ? snapshot.data.displayName : "";
+                  builder: (BuildContext context,
+                      AsyncSnapshot<FirebaseUser> snapshot) {
+                    String userName = snapshot.hasData
+                        ? snapshot.data.isAnonymous
+                            ? "Anonymous user"
+                            : snapshot.data.displayName
+                        : "";
                     return Center(
                       child: Column(
                         children: <Widget>[
