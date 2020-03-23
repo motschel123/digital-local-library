@@ -51,12 +51,13 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        key: _scaffoldKey,
-        appBar: AppBar(
-          title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
-        ),
-        body: _buildBody(),
-        floatingActionButton: _buildUploadFAB(context));
+      key: _scaffoldKey,
+      appBar: AppBar(
+        title: Text(Consts.UPLOADBOOKSCREEN_TITLE),
+      ),
+      body: _buildBody(),
+      floatingActionButton: _buildUploadFAB(context),
+    );
   }
 
   Widget _buildBody() {
