@@ -1,15 +1,14 @@
+import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_signin_button/button_list.dart';
 import 'package:flutter_signin_button/button_view.dart';
-import 'package:flutter/services.dart';
 
 class SignInScreen extends StatelessWidget {
   final GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
-  final bool anonymousSignIn;
 
-  SignInScreen({Key key, @required this.anonymousSignIn}) : super(key: key);
+  SignInScreen({Key key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -28,7 +27,7 @@ class SignInScreen extends StatelessWidget {
                     context,
                     ModalRoute.withName('/home'),
                   );
-                } on PlatformException catch (e) {
+                } on AuthException catch (e) {
                   _scaffoldKey.currentState.showSnackBar(SnackBar(
                     content: Text(e.message),
                   ));
@@ -43,18 +42,18 @@ class SignInScreen extends StatelessWidget {
               },
               text: "Sign in with email",
             ),
-            anonymousSignIn
-                ? MaterialButton(
-                    child: Text("Skip for now"),
-                    onPressed: () async {
-                      try {
-                        AuthProvider.of(context).signInAnonymously();
-                      } catch (e) {
-                        print(e);
-                      }
-                    },
-                  )
-                : Container(),
+            MaterialButton(
+              child: Text("Skip for now"),
+              onPressed: () async {
+                try {
+                  AuthProvider.of(context).signInAnonymously();
+                } on AuthException catch (e) {
+                  _scaffoldKey.currentState.showSnackBar(SnackBar(
+                    content: Text(e.message),
+                  ));
+                }
+              },
+            )
           ],
         ),
       ),

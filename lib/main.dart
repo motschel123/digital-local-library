@@ -32,8 +32,8 @@ class MyApp extends StatelessWidget {
             ),
             routes: {
               '/home': (context) => LandingScreen(),
+              '/sign_in/': (context) => SignInScreen(),
               '/sign_in/email': (context) => SignInEmailScreen(),
-              '/forced_sign_in': (context) => SignInScreen(anonymousSignIn: false),
               '/profile': (context) => ProfileScreen(),
               '/upload': (context) =>
                   UploadBookScreen(modelContext: context)
