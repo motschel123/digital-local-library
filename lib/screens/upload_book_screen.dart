@@ -210,13 +210,12 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                   return;
                 }
                 try {
-                  await Book.getByIsbn(isbn).then((Book book) {
+                  await BookBase.getByIsbn(isbn).then((BookBase bookBase) {
                     setState(() {
-                      isbnController.text = book.isbn;
-                      titleController.text = book.title;
-                      authorController.text = book.author;
-                      imageLinkController.text = book.imagePath;
-                      descriptionController.text = book.description;
+                      isbnController.text = bookBase.isbn;
+                      titleController.text = bookBase.title;
+                      authorController.text = bookBase.author;
+                      imageLinkController.text = bookBase.imagePath;
                       _formKey.currentState.validate();
                       fetchingData = false;
                     });
@@ -249,8 +248,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
               setState(() {
                 fetchingData = true;
               });
-              if (await _uploadBook(
-                  await AuthProvider.of(context).currentUser())) {
+              if (await _uploadBook(context)) {
                 Navigator.of(context).pop(true);
               } else {
                 _scaffoldKey.currentState.showSnackBar(
@@ -264,7 +262,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
     );
   }
 
-  Future<bool> _uploadBook(String uid) async {
+  Future<bool> _uploadBook(BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       // Close keyboard
@@ -281,7 +279,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         author: authorController.text,
         imagePath: imageLinkController.text,
         description: descriptionController.text,
-        uid: uid,
+        uid: await AuthProvider.of(context).currentUser(),
       );
       _scaffoldKey.currentState.hideCurrentSnackBar();
       setState(() {
@@ -289,8 +287,8 @@ class UploadBookScreenState extends State<UploadBookScreen> {
       });
       return await ScopedModel.of<BooksDatabaseModel>(widget.modelContext)
           .uploadBook(
-              book: uploadBook,
-              uid: await AuthProvider.of(context).currentUser());
+        book: uploadBook,
+      );
     }
     return false;
   }

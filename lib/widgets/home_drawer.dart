@@ -1,3 +1,4 @@
+import 'package:digital_local_library/data/user.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -29,11 +30,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     Theme.of(context).primaryColor.withOpacity(0.6)
                   ]),
                 ),
-                child: StreamBuilder(
-                  stream: AuthProvider.of(context).currentUserName().asStream(),
+                child: StreamBuilder<User>(
+                  stream: User.fromContext(context).asStream(),
                   builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
-                    String userName = snapshot.hasData ? snapshot.data : "";
+                      (BuildContext context, AsyncSnapshot<User> snapshot) {
+                    String userName =
+                        snapshot.hasData ? snapshot.data.userName : "Anonymous user";
                     return Center(
                       child: Column(
                         children: <Widget>[
@@ -60,15 +62,26 @@ class _HomeDrawerState extends State<HomeDrawer> {
             ],
           ),
           Align(
-            alignment: Alignment.bottomCenter,
-            child: MaterialButton(
-              onPressed: () {
-                Navigator.pop(context);
-                AuthProvider.of(context).signOut();
-              },
-              child: Text("Sign out"),
-            ),
-          ),
+              alignment: Alignment.bottomCenter,
+              child: StreamBuilder<String>(
+                  stream: AuthProvider.of(context).currentUser().asStream(),
+                  builder: (context, AsyncSnapshot<String> snapshot) {
+                    return snapshot.hasData
+                        ? MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              AuthProvider.of(context).signOut();
+                            },
+                            child: Text("Sign out"),
+                          )
+                        : MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/sign_in');
+                            },
+                            child: Text("Sign in"),
+                          );
+                  })),
         ],
       ),
     );

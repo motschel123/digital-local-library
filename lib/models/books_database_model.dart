@@ -37,7 +37,7 @@ class BooksDatabaseModel extends Model {
     notifyListeners();
   }
 
-  Future<bool> uploadBook({@required Book book, @required String uid}) async {
+  Future<bool> uploadBook({@required Book book}) async {
     try {
       await Firestore.instance.collection("books").add({
         'author': book.author,
@@ -45,7 +45,7 @@ class BooksDatabaseModel extends Model {
         'isbn': book.isbn,
         'imagePath': book.imagePath,
         'description': book.description,
-        'uid': uid,
+        'uid': book.uid,
       });
     } catch (e) {
       return false;

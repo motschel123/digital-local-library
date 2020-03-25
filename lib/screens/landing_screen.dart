@@ -1,7 +1,7 @@
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
-import 'package:digital_local_library/sign_in/sign_in_screen.dart';
 import 'package:digital_local_library/screens/main/main_screen.dart';
+import 'package:digital_local_library/screens/sign_in/sign_in_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

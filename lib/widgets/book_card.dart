@@ -33,7 +33,9 @@ class BookCard implements ExpansionPanelRadio {
             color: Colors.black,
           ),
           children: [
-            TextSpan(text: book.description, style: TextStyle(fontWeight: FontWeight.normal)),
+            TextSpan(
+                text: book.description,
+                style: TextStyle(fontWeight: FontWeight.normal)),
           ],
         ),
       ),
@@ -55,10 +57,15 @@ class BookCard implements ExpansionPanelRadio {
                 ),
                 child: Container(
                   alignment: FractionalOffset.bottomCenter,
-                  child: StreamBuilder<String>(
-                    stream: User.nickNameFromUid(book.uid).asStream(),
-                    builder: (BuildContext context, AsyncSnapshot<String> name) {
-                      return Text("from: " + "${name.data}");
+                  child: StreamBuilder<User>(
+                    stream: User.fromUid(book.uid).asStream(),
+                    builder:
+                        (BuildContext context, AsyncSnapshot<User> snapshot) {
+                      if (snapshot.hasData) {
+                        return Text("from: ${snapshot.data.userName}");
+                      } else {
+                        return Text("Loading...");
+                      }
                     },
                   ),
                 ),
@@ -69,7 +76,7 @@ class BookCard implements ExpansionPanelRadio {
                   onPressed: () {},
                   child: Text("Message"),
                 ),
-              )
+              ),
             ],
           ),
           if (book.description != "") _buildBookDescription(),
