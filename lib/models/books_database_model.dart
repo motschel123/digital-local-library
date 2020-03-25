@@ -15,11 +15,16 @@ class BooksDatabaseModel extends Model {
     _stream.listen((querySnapshot) {
       _books = querySnapshot.documents
           .map((dSnap) {
+            // Description is an optional property
+            String bookDescription =
+                dSnap.data.containsKey('description') ? dSnap.data['description'] : "";
+
             return new Book(
                 isbn: dSnap.data['isbn'].toString(),
                 title: dSnap.data['title'].toString(),
                 author: dSnap.data['author'].toString(),
                 imagePath: dSnap.data['imagePath'].toString(),
+                description: bookDescription,
                 uid: dSnap.data['uid'].toString());
           })
           .toList()
@@ -39,6 +44,7 @@ class BooksDatabaseModel extends Model {
         'title': book.title,
         'isbn': book.isbn,
         'imagePath': book.imagePath,
+        'description': book.description,
         'uid': uid,
       });
     } catch (e) {

@@ -23,6 +23,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
   final TextEditingController titleController = TextEditingController();
   final TextEditingController authorController = TextEditingController();
   final TextEditingController imageLinkController = TextEditingController();
+  final TextEditingController descriptionController = TextEditingController();
 
   bool fetchingData = false;
 
@@ -43,6 +44,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
     titleController.dispose();
     authorController.dispose();
     imageLinkController.dispose();
+    descriptionController.dispose();
     super.dispose();
   }
 
@@ -63,32 +65,37 @@ class UploadBookScreenState extends State<UploadBookScreen> {
       key: _formKey,
       child: Padding(
         padding: const EdgeInsets.all(8.0),
-        child: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
+        child: Column(
           children: <Widget>[
-            Align(
-              alignment: Alignment.topLeft,
-              child: Container(
-                margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
-                height: 140.0,
-                child: imageLinkController.text == ""
-                    ? null
-                    : Image(
-                        image: NetworkImage(imageLinkController.text),
-                      ),
-              ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                Align(
+                  alignment: Alignment.topLeft,
+                  child: Container(
+                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    height: 140.0,
+                    child: imageLinkController.text == ""
+                        ? null
+                        : Image(
+                            image: NetworkImage(imageLinkController.text),
+                          ),
+                  ),
+                ),
+                Expanded(
+                  child: Column(
+                    children: <Widget>[
+                      _buildTitleFormField(),
+                      _buildAuthorFormField(),
+                      _buildIsbnFormField(),
+                      _buildImageLinkFormField(),
+                      _buildScanIsbnButton()
+                    ],
+                  ),
+                ),
+              ],
             ),
-            Expanded(
-              child: Column(
-                children: <Widget>[
-                  _buildTitleFormField(),
-                  _buildAuthorFormField(),
-                  _buildIsbnFormField(),
-                  _buildImageLinkFormField(),
-                  _buildScanIsbnButton()
-                ],
-              ),
-            ),
+            _buildDescriptionFormField(),
           ],
         ),
       ),
@@ -164,6 +171,18 @@ class UploadBookScreenState extends State<UploadBookScreen> {
     );
   }
 
+  Widget _buildDescriptionFormField() {
+    return TextFormField(
+      controller: descriptionController,
+      keyboardType: TextInputType.multiline,
+      maxLines: null,
+      decoration: InputDecoration(
+        hintText: "Enter an optional description",
+      ),
+      textAlign: TextAlign.left,
+    );
+  }
+
   Widget _buildScanIsbnButton() {
     return Center(
       child: fetchingData
@@ -197,6 +216,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                       titleController.text = book.title;
                       authorController.text = book.author;
                       imageLinkController.text = book.imagePath;
+                      descriptionController.text = book.description;
                       _formKey.currentState.validate();
                       fetchingData = false;
                     });
@@ -260,6 +280,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         title: titleController.text,
         author: authorController.text,
         imagePath: imageLinkController.text,
+        description: descriptionController.text,
         uid: uid,
       );
       _scaffoldKey.currentState.hideCurrentSnackBar();
