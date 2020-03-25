@@ -1,5 +1,4 @@
 import 'package:digital_local_library/sign_in/auth_provider.dart';
-import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum Screen { ProfileScreen }
