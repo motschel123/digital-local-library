@@ -1,3 +1,4 @@
+import 'package:digital_local_library/data/user.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 
@@ -29,12 +30,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     Theme.of(context).primaryColor.withOpacity(0.6)
                   ]),
                 ),
-                child: StreamBuilder<String>(
-                  stream: AuthProvider.of(context).currentUser().asStream(),
+                child: StreamBuilder<User>(
+                  stream: User.fromContext(context).asStream(),
                   builder:
-                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                      (BuildContext context, AsyncSnapshot<User> snapshot) {
                     String userName =
-                        snapshot.hasData ? snapshot.data : "Anonymous user";
+                        snapshot.hasData ? snapshot.data.userName : "Anonymous user";
                     return Center(
                       child: Column(
                         children: <Widget>[

@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:digital_local_library/data/user.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -16,17 +19,35 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   TextEditingController _emailCtr;
   TextEditingController _passwordCtr;
-  TextEditingController _usernameCtr;
+  TextEditingController _repeatPasswordCtr;
 
   ScreenState currentState = ScreenState.sign_in;
 
   @override
   void initState() {
     _emailCtr = TextEditingController();
+    _emailCtr.addListener(() {
+      final String text = _emailCtr.text;
+      if (text.contains(' ')) {
+        _emailCtr.value = _emailCtr.value.copyWith(
+          selection: TextSelection.fromPosition(TextPosition(offset: text.indexOf(' '))),
+          text: text.replaceAll(' ', ''),
+          composing: TextRange.empty,
+        );
+      }
+    });
     _passwordCtr = TextEditingController();
-    _usernameCtr = TextEditingController();
+    _repeatPasswordCtr = TextEditingController();
 
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _emailCtr.dispose();
+    _passwordCtr.dispose();
+    _repeatPasswordCtr.dispose();
+    super.dispose();
   }
 
   @override
@@ -63,9 +84,6 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
             currentState == ScreenState.sign_up
                 ? _repeatPasswordFormField()
                 : Container(),
-            currentState == ScreenState.sign_up
-                ? _usernameFormField()
-                : Container(),
           ],
         ),
       ),
@@ -74,6 +92,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   TextFormField _emailFormField() {
     return TextFormField(
+      keyboardType: TextInputType.emailAddress,
       controller: _emailCtr,
       decoration: InputDecoration(
         hintText: "Enter your email",
@@ -109,7 +128,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   TextFormField _repeatPasswordFormField() {
     return TextFormField(
-      controller: _passwordCtr,
+      controller: _repeatPasswordCtr,
       decoration: InputDecoration(
         hintText: "Repeat your password",
         prefixText: "Reapeat Password",
@@ -119,23 +138,6 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       validator: (value) {
         if (value != _passwordCtr.text) {
           return 'Passwords don\'t match';
-        }
-        return null;
-      },
-    );
-  }
-
-  TextFormField _usernameFormField() {
-    return TextFormField(
-      controller: _usernameCtr,
-      decoration: InputDecoration(
-        hintText: "Enter your name",
-        prefixText: "Name",
-      ),
-      textAlign: TextAlign.right,
-      validator: (value) {
-        if (!_validUsername(value)) {
-          return 'Enter your name';
         }
         return null;
       },
@@ -176,7 +178,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       try {
         await AuthProvider.of(context)
             .signInWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
-            Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName('/home'));
       } on PlatformException catch (e) {
         String error = e.code;
         switch (error) {
@@ -212,11 +214,12 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       try {
         await AuthProvider.of(context)
             .createUserWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
-            Navigator.pop(context);
+        Navigator.popUntil(context, ModalRoute.withName("/home"));
       } on AuthException catch (e) {
         _scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text("${e.message}")));
       } catch (e) {
+        log(e);
         _scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text("Something went wrong")));
       }

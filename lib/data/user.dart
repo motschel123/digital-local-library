@@ -1,4 +1,5 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 
@@ -26,6 +27,10 @@ class User {
       print(e.message);
       return null;
     }
+  }
+
+  static Future<User> fromContext(BuildContext context) async {
+    return fromUid(await AuthProvider.of(context).currentUser());
   }
 
   Future<void> updateUser({String name, String email}) async {

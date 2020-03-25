@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:digital_local_library/screens/sign_in/sign_in_email_screen.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
@@ -39,7 +41,10 @@ class SignInScreen extends StatelessWidget {
             SignInButton(
               Buttons.Email,
               onPressed: () async {
-                Navigator.push(context, MaterialPageRoute(builder: (context) => SignInEmailScreen()));
+                await Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => SignInEmailScreen()));
               },
               text: "Sign in with email",
             ),
