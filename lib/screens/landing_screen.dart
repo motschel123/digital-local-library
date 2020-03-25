@@ -14,7 +14,7 @@ class LandingScreen extends StatelessWidget {
         builder: (context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final bool loggedIn = snapshot.hasData;
-            return loggedIn ? MainPage() : SignInScreen();
+            return loggedIn ? MainScreen() : SignInScreen();
           }
           return CircularProgressIndicator();
         });

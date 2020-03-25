@@ -19,12 +19,12 @@ List<Widget> allDestinationViews = [
   new SettingsView(),
 ];
 
-class MainPage extends StatefulWidget {
+class MainScreen extends StatefulWidget {
   @override
   _MainPageState createState() => _MainPageState();
 }
 
-class _MainPageState extends State<MainPage> with TickerProviderStateMixin<MainPage> {
+class _MainPageState extends State<MainScreen> with TickerProviderStateMixin<MainScreen> {
   int _currentIndex = 0;
 
   @override
