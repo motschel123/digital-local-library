@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:digital_local_library/screens/sign_in/sign_in_email_screen.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
