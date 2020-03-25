@@ -47,6 +47,8 @@ class SignInScreen extends StatelessWidget {
               onPressed: () async {
                 try {
                   AuthProvider.of(context).signInAnonymously();
+                  Navigator.popUntil(
+                      context, ModalRoute.withName('/home'));
                 } on AuthException catch (e) {
                   _scaffoldKey.currentState.showSnackBar(SnackBar(
                     content: Text(e.message),

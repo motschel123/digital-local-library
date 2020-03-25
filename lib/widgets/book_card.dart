@@ -34,9 +34,16 @@ class BookCard implements ExpansionPanelRadio {
             child: Container(
               alignment: FractionalOffset.bottomCenter,
               child: StreamBuilder<String>(
-                stream: User.nickNameFromUid(book.uid).asStream(),
-                builder: (BuildContext context, AsyncSnapshot<String> name) {
-                  return Text("from: " + "${name.data}");
+                stream: User.userNameFromUid(book.uid).asStream(),
+                builder:
+                    (BuildContext context, AsyncSnapshot<String> snapshot) {
+                  if (snapshot.hasData) {
+                    if (snapshot.data.isEmpty) {
+                      return Text("Not Signed in yet");
+                    }
+                    return Text("from: " + "${snapshot.data}");
+                  }
+                  return Text("Loading");
                 },
               ),
             ),

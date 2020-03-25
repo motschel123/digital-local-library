@@ -3,20 +3,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
-class AuthException implements Exception {
-  final String code;
-  final String message;
-  final String detail;
-
-  AuthException({@required this.code, @required this.message, this.detail});
-
-  static AuthException basic(dynamic e) {
-    return AuthException(code: "BASIC_ERROR", message: "Oops, something went wrong.", detail: e.toString());
-  }
-}
-
 abstract class BaseAuth {
-  Stream<String> get onAuthStateChanged;
+  Stream<FirebaseUser> get onAuthStateChanged;
   Future<String> signInWithEmailAndPassword(
     String email,
     String password,
@@ -37,22 +25,7 @@ class Auth implements BaseAuth {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
-  Stream<String> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged.map(
-        (FirebaseUser user) => user?.uid,
-      );
-
-  @override
-  Future<String> createUserWithEmailAndPassword(
-      String email, String password) async {
-        try {
-    return (await _firebaseAuth.createUserWithEmailAndPassword(
-            email: email, password: password))
-        .user
-        .uid;
-        } catch (e) {
-          throw AuthException.basic(e);
-        }
-  }
+  Stream<FirebaseUser> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged;
 
   @override
   Future<FirebaseUser> currentUser() async {
@@ -62,6 +35,25 @@ class Auth implements BaseAuth {
       throw AuthException.basic(e);
     }
   }
+
+  @override
+  Future<String> createUserWithEmailAndPassword(
+      String email, String password) async {
+        try {
+    return (await _firebaseAuth.createUserWithEmailAndPassword(
+            email: email, password: password))
+        .user
+        .uid;
+        } on PlatformException catch (e) {
+          switch (e.code) {
+            default:
+              throw AuthException(code: e.code, message: e.message);
+          }
+        } catch (e) {
+          throw AuthException.basic(e);
+        }
+  }
+
 
   @override
   Future<String> signInWithEmailAndPassword(
@@ -86,7 +78,13 @@ class Auth implements BaseAuth {
         idToken: _auth.idToken,
         accessToken: _auth.accessToken,
       );
-      return await _firebaseAuth.signInWithCredential(credential);
+      FirebaseUser currentUser = await _firebaseAuth.currentUser();
+      if(currentUser != null && currentUser.isAnonymous) {
+        AuthResult authResult = (await currentUser.linkWithCredential(credential));
+        return authResult;
+      } else {
+        return (await _firebaseAuth.signInWithCredential(credential));
+      }
     } catch (e) {
       throw AuthException.basic(e);
     }
@@ -99,7 +97,6 @@ class Auth implements BaseAuth {
     } catch (e) {
       throw AuthException.basic(e);
     }
-    
   }
 
   @override
@@ -112,3 +109,17 @@ class Auth implements BaseAuth {
     }
   }
 }
+
+class AuthException implements Exception {
+  final String code;
+  final String message;
+  final String detail;
+
+  AuthException({@required this.code, @required this.message, this.detail});
+
+  static AuthException basic(dynamic e) {
+    print("Error: $e");
+    return AuthException(code: "BASIC_ERROR", message: "Oops, something went wrong.", detail: e.toString());
+  }
+}
+

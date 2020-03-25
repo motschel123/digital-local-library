@@ -32,7 +32,7 @@ class MyApp extends StatelessWidget {
             ),
             routes: {
               '/home': (context) => LandingScreen(),
-              '/sign_in/': (context) => SignInScreen(),
+              '/sign_in': (context) => SignInScreen(),
               '/sign_in/email': (context) => SignInEmailScreen(),
               '/profile': (context) => ProfileScreen(),
               '/upload': (context) =>

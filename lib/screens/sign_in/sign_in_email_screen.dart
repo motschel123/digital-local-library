@@ -1,3 +1,4 @@
+import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -21,11 +22,11 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   @override
   void initState() {
-    super.initState();
-
     _emailCtr = TextEditingController();
     _passwordCtr = TextEditingController();
     _usernameCtr = TextEditingController();
+
+    super.initState();
   }
 
   @override
@@ -131,7 +132,6 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
         hintText: "Enter your name",
         prefixText: "Name",
       ),
-      obscureText: true,
       textAlign: TextAlign.right,
       validator: (value) {
         if (!_validUsername(value)) {
@@ -176,6 +176,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       try {
         await AuthProvider.of(context)
             .signInWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
+            Navigator.pop(context);
       } on PlatformException catch (e) {
         String error = e.code;
         switch (error) {
@@ -207,13 +208,26 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       });
       return;
     }
+    if (_formKey.currentState.validate()) {
+      try {
+        await AuthProvider.of(context)
+            .createUserWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
+            Navigator.pop(context);
+      } on AuthException catch (e) {
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("${e.message}")));
+      } catch (e) {
+        _scaffoldKey.currentState
+            .showSnackBar(SnackBar(content: Text("Something went wrong")));
+      }
+    }
   }
 
   bool _validEmail(String email) {
     RegExp _emailRegExp = new RegExp(
         r"^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$");
 
-    if (_emailRegExp.hasMatch(email) &&
+    if (_emailRegExp.hasMatch(email.trimRight()) &&
         _emailRegExp.allMatches(email).length == 1) {
       return true;
     } else {
@@ -222,6 +236,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
   }
 
   bool _validPassword(String pass) {
+    return true;
     if (pass == null || pass.isEmpty) return false;
     if (pass.length < 8) {
       return false;

@@ -74,7 +74,7 @@ class _HomeDrawerState extends State<HomeDrawer> {
                           ? MaterialButton(
                               onPressed: () {
                                 Navigator.pop(context);
-                                Navigator.pushNamed(context, '/forced_sign_in');
+                                Navigator.pushNamed(context, '/sign_in');
                               },
                               child: Text("Sign in"),
                             )
