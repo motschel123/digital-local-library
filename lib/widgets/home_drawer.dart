@@ -30,15 +30,12 @@ class _HomeDrawerState extends State<HomeDrawer> {
                     Theme.of(context).primaryColor.withOpacity(0.6)
                   ]),
                 ),
-                child: StreamBuilder<FirebaseUser>(
+                child: StreamBuilder<String>(
                   stream: AuthProvider.of(context).currentUser().asStream(),
-                  builder: (BuildContext context,
-                      AsyncSnapshot<FirebaseUser> snapshot) {
-                    String userName = snapshot.hasData
-                        ? snapshot.data.isAnonymous
-                            ? "Anonymous user"
-                            : snapshot.data.displayName
-                        : "";
+                  builder:
+                      (BuildContext context, AsyncSnapshot<String> snapshot) {
+                    String userName =
+                        snapshot.hasData ? snapshot.data : "Anonymous user";
                     return Center(
                       child: Column(
                         children: <Widget>[
@@ -66,27 +63,24 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           Align(
               alignment: Alignment.bottomCenter,
-              child: StreamBuilder<FirebaseUser>(
+              child: StreamBuilder<String>(
                   stream: AuthProvider.of(context).currentUser().asStream(),
-                  builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
-                    if (snapshot.hasData) {
-                      return snapshot.data.isAnonymous
-                          ? MaterialButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                Navigator.pushNamed(context, '/sign_in');
-                              },
-                              child: Text("Sign in"),
-                            )
-                          : MaterialButton(
-                              onPressed: () {
-                                Navigator.pop(context);
-                                AuthProvider.of(context).signOut();
-                              },
-                              child: Text("Sign out"),
-                            );
-                    }
-                    return Container();
+                  builder: (context, AsyncSnapshot<String> snapshot) {
+                    return snapshot.hasData
+                        ? MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              AuthProvider.of(context).signOut();
+                            },
+                            child: Text("Sign out"),
+                          )
+                        : MaterialButton(
+                            onPressed: () {
+                              Navigator.pop(context);
+                              Navigator.pushNamed(context, '/sign_in');
+                            },
+                            child: Text("Sign in"),
+                          );
                   })),
         ],
       ),

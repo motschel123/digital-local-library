@@ -12,7 +12,7 @@ class LandingScreen extends StatelessWidget {
     final Auth auth = AuthProvider.of(context);
     return StreamBuilder(
         stream: auth.onAuthStateChanged,
-        builder: (context, AsyncSnapshot<FirebaseUser> snapshot) {
+        builder: (context, AsyncSnapshot<String> snapshot) {
           if (snapshot.connectionState == ConnectionState.active) {
             final bool loggedIn = snapshot.hasData;
             return loggedIn ? HomeScreen() : SignInScreen();

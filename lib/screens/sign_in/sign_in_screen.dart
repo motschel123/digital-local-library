@@ -1,3 +1,4 @@
+import 'package:digital_local_library/screens/sign_in/sign_in_email_screen.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/cupertino.dart';
@@ -38,11 +39,11 @@ class SignInScreen extends StatelessWidget {
             SignInButton(
               Buttons.Email,
               onPressed: () async {
-                Navigator.pushNamed(context, '/sign_in/email');
+                Navigator.push(context, MaterialPageRoute(builder: (context) => SignInEmailScreen()));
               },
               text: "Sign in with email",
             ),
-            MaterialButton(
+            /*MaterialButton(
               child: Text("Skip for now"),
               onPressed: () async {
                 try {
@@ -55,7 +56,7 @@ class SignInScreen extends StatelessWidget {
                   ));
                 }
               },
-            )
+            )*/
           ],
         ),
       ),
