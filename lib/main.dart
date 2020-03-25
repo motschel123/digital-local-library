@@ -1,11 +1,10 @@
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/screens/landing_screen.dart';
-import 'package:digital_local_library/screens/profile_screen.dart';
 import 'package:digital_local_library/screens/upload_book_screen.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
-import 'package:digital_local_library/sign_in/sign_in_email_pass.dart';
+import 'package:digital_local_library/sign_in/sign_in_screen.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/consts/Consts.dart';
@@ -30,13 +29,12 @@ class MyApp extends StatelessWidget {
               accentColor: Colors.greenAccent,
             ),
             routes: {
-              '/sign_in': (context) => LandingScreen(),
-              '/sign_in/email': (context) => SignInEmailScreen(),
-              '/profile': (context) => ProfileScreen(),
-              '/upload': (context) =>
+              '/home': (context) => LandingScreen(),
+              '/home/sign_in': (context) => SignInScreen(),
+              '/home/upload': (context) =>
                   UploadBookScreen(modelContext: context)
             },
-            initialRoute: '/sign_in',
+            initialRoute: '/home',
           ),
         ),
       ),
