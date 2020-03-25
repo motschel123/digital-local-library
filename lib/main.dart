@@ -30,7 +30,7 @@ class MyApp extends StatelessWidget {
             ),
             routes: {
               '/home': (context) => LandingScreen(),
-              '/sign_in': (context) => SignInScreen(),
+              '/home/sign_in': (context) => SignInScreen(),
               '/home/upload': (context) =>
                   UploadBookScreen(modelContext: context)
             },

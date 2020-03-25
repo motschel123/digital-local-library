@@ -10,7 +10,7 @@ class SignInEmailScreen extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: <Widget>[
             MaterialButton(
-              child: Text("Comming soon..."),
+              child: Text("Coming soon..."),
               onPressed: () async {
                 if ((await AuthProvider.of(context).signInWithGoogle()) !=
                     null) {
