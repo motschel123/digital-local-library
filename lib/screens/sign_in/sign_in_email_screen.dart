@@ -1,6 +1,5 @@
 import 'dart:developer';
 
-import 'package:digital_local_library/data/user.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
@@ -119,7 +118,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
       textAlign: TextAlign.right,
       validator: (value) {
         if (!_validPassword(value)) {
-          return 'At least 8 chars long';
+          return 'At least 6 chars long';
         }
         return null;
       },
@@ -230,8 +229,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
     RegExp _emailRegExp = new RegExp(
         r"^((([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+(\.([a-z]|\d|[!#\$%&'\*\+\-\/=\?\^_`{\|}~]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])+)*)|((\x22)((((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(([\x01-\x08\x0b\x0c\x0e-\x1f\x7f]|\x21|[\x23-\x5b]|[\x5d-\x7e]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(\\([\x01-\x09\x0b\x0c\x0d-\x7f]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF]))))*(((\x20|\x09)*(\x0d\x0a))?(\x20|\x09)+)?(\x22)))@((([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|\d|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))\.)+(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])|(([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])([a-z]|\d|-|\.|_|~|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])*([a-z]|[\u00A0-\uD7FF\uF900-\uFDCF\uFDF0-\uFFEF])))$");
 
-    if (_emailRegExp.hasMatch(email.trimRight()) &&
-        _emailRegExp.allMatches(email).length == 1) {
+    if (_emailRegExp.allMatches(email).length == 1) {
       return true;
     } else {
       return false;
@@ -239,17 +237,11 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
   }
 
   bool _validPassword(String pass) {
-    return true;
     if (pass == null || pass.isEmpty) return false;
-    if (pass.length < 8) {
+    if (pass.length <= 6) {
       return false;
     } else {
       return true;
     }
-  }
-
-  bool _validUsername(String name) {
-    if (name == null || name.isEmpty) return false;
-    return true;
   }
 }
