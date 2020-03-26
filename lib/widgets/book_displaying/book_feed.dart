@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/widgets/book_card.dart';
+import 'package:digital_local_library/widgets/book_displaying/book_card.dart';
 
 class BookFeed extends StatefulWidget {
   @override
