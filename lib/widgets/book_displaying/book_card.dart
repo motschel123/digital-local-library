@@ -22,7 +22,6 @@ class BookCard implements ExpansionPanelRadio {
   }
 
   Widget _buildBookDescription() {
-    print(book.description);
     return Padding(
       padding: const EdgeInsets.all(16.0),
       child: new RichText(
@@ -34,8 +33,9 @@ class BookCard implements ExpansionPanelRadio {
           ),
           children: [
             TextSpan(
-                text: book.description,
-                style: TextStyle(fontWeight: FontWeight.normal)),
+              text: book.description,
+              style: TextStyle(fontWeight: FontWeight.normal),
+            ),
           ],
         ),
       ),
