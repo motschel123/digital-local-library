@@ -1,5 +1,6 @@
-import 'package:digital_local_library/data/user.dart';
+import 'package:digital_local_library/sign_in/auth.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 
 enum Screen { ProfileScreen }
@@ -31,11 +32,11 @@ class _HomeDrawerState extends State<HomeDrawer> {
                   ]),
                 ),
                 child: StreamBuilder<User>(
-                  stream: User.fromContext(context).asStream(),
+                  stream: AuthProvider.of(context).currentUser().asStream(),
                   builder:
                       (BuildContext context, AsyncSnapshot<User> snapshot) {
                     String userName =
-                        snapshot.hasData ? snapshot.data.userName : "Anonymous user";
+                        snapshot.hasData ? snapshot.data.displayName : "Anonymous user";
                     return Center(
                       child: Column(
                         children: <Widget>[
@@ -63,9 +64,9 @@ class _HomeDrawerState extends State<HomeDrawer> {
           ),
           Align(
               alignment: Alignment.bottomCenter,
-              child: StreamBuilder<String>(
+              child: StreamBuilder<User>(
                   stream: AuthProvider.of(context).currentUser().asStream(),
-                  builder: (context, AsyncSnapshot<String> snapshot) {
+                  builder: (context, AsyncSnapshot<User> snapshot) {
                     return snapshot.hasData
                         ? MaterialButton(
                             onPressed: () {

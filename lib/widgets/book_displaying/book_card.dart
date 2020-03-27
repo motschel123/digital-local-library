@@ -1,5 +1,6 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:digital_local_library/data/user.dart';
+import 'package:digital_local_library/sign_in/auth.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
 
@@ -57,17 +58,7 @@ class BookCard implements ExpansionPanelRadio {
                 ),
                 child: Container(
                   alignment: FractionalOffset.bottomCenter,
-                  child: StreamBuilder<User>(
-                    stream: User.fromUid(book.uid).asStream(),
-                    builder:
-                        (BuildContext context, AsyncSnapshot<User> snapshot) {
-                      if (snapshot.hasData) {
-                        return Text("from: ${snapshot.data.userName}");
-                      } else {
-                        return Text("Loading...");
-                      }
-                    },
-                  ),
+                  child: Text("from: disabled for now"), //${book.uid}"),
                 ),
               ),
               Container(
