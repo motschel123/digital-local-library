@@ -40,26 +40,25 @@ class SignInScreen extends StatelessWidget {
               Buttons.Email,
               onPressed: () async {
                 await Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => SignInEmailScreen()));
+                  context,
+                  MaterialPageRoute(builder: (context) => SignInEmailScreen()),
+                );
               },
               text: "Sign in with email",
             ),
-            /*MaterialButton(
+            MaterialButton(
               child: Text("Skip for now"),
               onPressed: () async {
                 try {
                   AuthProvider.of(context).signInAnonymously();
-                  Navigator.popUntil(
-                      context, ModalRoute.withName('/home'));
+                  Navigator.popUntil(context, ModalRoute.withName('/home'));
                 } on AuthException catch (e) {
                   _scaffoldKey.currentState.showSnackBar(SnackBar(
                     content: Text(e.message),
                   ));
                 }
               },
-            )*/
+            )
           ],
         ),
       ),

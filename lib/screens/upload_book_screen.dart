@@ -279,7 +279,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         author: authorController.text,
         imagePath: imageLinkController.text,
         description: descriptionController.text,
-        uid: await AuthProvider.of(context).currentUser(),
+        uid: (await AuthProvider.of(context).currentUser()).uid,
       );
       _scaffoldKey.currentState.hideCurrentSnackBar();
       setState(() {

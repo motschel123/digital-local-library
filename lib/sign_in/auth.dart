@@ -4,20 +4,20 @@ import 'package:flutter/services.dart';
 import 'package:google_sign_in/google_sign_in.dart';
 
 abstract class BaseAuth {
-  Stream<String> get onAuthStateChanged;
-  Future<String> signInWithEmailAndPassword(
+  Stream<User> get onAuthStateChanged;
+  Future<User> signInWithEmailAndPassword(
     String email,
     String password,
   );
-  Future<String> createUserWithEmailAndPassword(
+  Future<User> createUserWithEmailAndPassword(
     String email,
     String password,
   );
 
-  Future<String> currentUser();
+  Future<User> currentUser();
   Future<void> signOut();
-  Future<String> signInWithGoogle();
-  Future<String> signInAnonymously();
+  Future<User> signInWithGoogle();
+  Future<User> signInAnonymously();
 }
 
 class Auth implements BaseAuth {
@@ -25,55 +25,54 @@ class Auth implements BaseAuth {
   final GoogleSignIn _googleSignIn = GoogleSignIn();
 
   @override
-  Stream<String> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged.map(
-        (FirebaseUser user) => user?.uid,
-  );
+  Stream<User> get onAuthStateChanged => _firebaseAuth.onAuthStateChanged.map(
+        (FirebaseUser user) => User(fUser: user),
+      );
 
   @override
-  Future<String> signInWithEmailAndPassword(
+  Future<User> signInWithEmailAndPassword(
       String email, String password) async {
-        try {
-      return (await _firebaseAuth.signInWithEmailAndPassword(
-              email: email, password: password))
-          .user
-          .uid;
-        } catch (e) {
-          throw AuthException.basic(e);
-        }
-  }
-
-  @override
-  Future<String> createUserWithEmailAndPassword(
-      String email, String password) async {
-        try {
-    return (await _firebaseAuth.createUserWithEmailAndPassword(
-            email: email, password: password))
-        .user
-        .uid;
-        } on PlatformException catch (e) {
-          switch (e.code) {
-            default:
-              throw AuthException(code: e.code, message: e.message);
-          }
-        } catch (e) {
-          throw AuthException.basic(e);
-        }
-  }
-
-  @override
-  Future<String> currentUser() async {
     try {
-      return (await _firebaseAuth.currentUser()).uid;
+      return User(fUser: (await _firebaseAuth.signInWithEmailAndPassword(
+              email: email, password: password)).user);
     } catch (e) {
       throw AuthException.basic(e);
     }
   }
-  
+
   @override
-  Future<String> signInWithGoogle() async {
+  Future<User> createUserWithEmailAndPassword(
+      String email, String password) async {
+    try {
+      return User(fUser: (await _firebaseAuth.createUserWithEmailAndPassword(
+              email: email, password: password)).user);
+    } on PlatformException catch (e) {
+      switch (e.code) {
+        default:
+          throw AuthException(code: e.code, message: e.message);
+      }
+    } catch (e) {
+      throw AuthException.basic(e);
+    }
+  }
+
+  @override
+  Future<User> currentUser() async {
+    try {
+      return User(fUser: await _firebaseAuth.currentUser());
+    } catch (e) {
+      throw AuthException.basic(e);
+    }
+  }
+
+  @override
+  Future<User> signInWithGoogle() async {
     try {
       final GoogleSignInAccount account = await _googleSignIn.signIn();
-      if(account == null) throw PlatformException(code: GoogleSignIn.kSignInCanceledError, message: "Google sign in canceled");
+      if (account == null)
+        throw PlatformException(
+            code: GoogleSignIn.kSignInCanceledError,
+            message: "Google sign in canceled");
       final GoogleSignInAuthentication _auth = await account.authentication;
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: _auth.idToken,
@@ -81,12 +80,12 @@ class Auth implements BaseAuth {
       );
       FirebaseUser currentUser = await _firebaseAuth.currentUser();
       AuthResult authResult;
-      if(currentUser != null && currentUser.isAnonymous) {
+      if (currentUser != null && currentUser.isAnonymous) {
         authResult = (await currentUser.linkWithCredential(credential));
       } else {
         authResult = (await _firebaseAuth.signInWithCredential(credential));
       }
-      return authResult.user.uid;
+      return User(fUser: authResult.user);
     } on PlatformException catch (e) {
       throw AuthException(code: e.code, message: e.message);
     } catch (e) {
@@ -95,9 +94,9 @@ class Auth implements BaseAuth {
   }
 
   @override
-  Future<String> signInAnonymously() async {
+  Future<User> signInAnonymously() async {
     try {
-      return (await _firebaseAuth.signInAnonymously()).user.uid;
+      return User(fUser: (await _firebaseAuth.signInAnonymously()).user);
     } catch (e) {
       throw AuthException.basic(e);
     }
@@ -123,7 +122,41 @@ class AuthException implements Exception {
 
   static AuthException basic(dynamic e) {
     print("Error: $e");
-    return AuthException(code: "BASIC_ERROR", message: "Oops, something went wrong.", detail: e.toString());
+    return AuthException(
+        code: "BASIC_ERROR",
+        message: "Oops, something went wrong.",
+        detail: e.toString());
   }
 }
 
+class User {
+  String _displayName;
+  String _email;
+  String _uid;
+  String _phoneNumber;
+  String _photoUrl;
+
+  bool _isAnonymous = true;
+  bool _isEmailVerified = false;
+
+  User({@required FirebaseUser fUser}) {
+    this._displayName = fUser.displayName;
+    this._email = fUser.email;
+    this._uid = fUser.uid;
+    this._isAnonymous = fUser.isAnonymous;
+    this._isEmailVerified = fUser.isEmailVerified;
+    this._phoneNumber = fUser.phoneNumber;
+    this._photoUrl = fUser.photoUrl;
+  }
+
+  Future<void> updateUser({String name, String email}) async {}
+
+  String get displayName => _displayName;
+  String get email => _email;
+  String get uid => _uid;
+  String get phoneNumber => _phoneNumber;
+  String get photoUrl => _photoUrl;
+  
+  bool get isAnonymous => _isAnonymous;
+  bool get isEmailVerified => _isEmailVerified;
+}
