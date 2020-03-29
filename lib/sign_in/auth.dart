@@ -91,22 +91,32 @@ class Auth implements BaseAuth {
     }
   }
 
+  /// Signs the user into firebaseAuth with a google account and
+  /// creates a new firebaseAuth-User if not signed in previousely
+  /// 
+  /// If the current user was previously signed in anonymously it 
+  /// links the google credential to the existing user and updates
+  /// the existing user (email, name, photoUrl) to match the 
+  /// provided data (also syncs with firestore)
   @override
   Future<User> signInWithGoogle() async {
     try {
+      // receives the google account to sign in with
       final GoogleSignInAccount account = await _googleSignIn.signIn();
       if (account == null) {
+        // signals the user has cancled google sign in
         throw PlatformException(
           code: GoogleSignIn.kSignInCanceledError,
           message: "Google sign in canceled",
         );
       }
-
+      // get needed credential
       final GoogleSignInAuthentication _auth = await account.authentication;
       final AuthCredential credential = GoogleAuthProvider.getCredential(
         idToken: _auth.idToken,
         accessToken: _auth.accessToken,
       );
+      // get current user to check if previously signed in anonymously
       FirebaseUser currentUser = await _firebaseAuth.currentUser();
       User userResult;
 
