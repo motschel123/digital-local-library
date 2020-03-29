@@ -16,6 +16,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   GlobalKey<ScaffoldState> _scaffoldKey = GlobalKey<ScaffoldState>();
 
+  TextEditingController _nameCtr;
   TextEditingController _emailCtr;
   TextEditingController _passwordCtr;
   TextEditingController _repeatPasswordCtr;
@@ -24,6 +25,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   @override
   void initState() {
+    _nameCtr = TextEditingController();
     _emailCtr = TextEditingController();
     _emailCtr.addListener(() {
       final String text = _emailCtr.text;
@@ -43,6 +45,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
 
   @override
   void dispose() {
+    _nameCtr.dispose();
     _emailCtr.dispose();
     _passwordCtr.dispose();
     _repeatPasswordCtr.dispose();
@@ -78,6 +81,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
         padding: EdgeInsets.symmetric(horizontal: 20),
         child: Column(
           children: <Widget>[
+            currentState == ScreenState.sign_up ? _nameFormField() : Container(),
             _emailFormField(),
             _passwordFormField(),
             currentState == ScreenState.sign_up
@@ -86,6 +90,23 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
           ],
         ),
       ),
+    );
+  }
+  
+  TextFormField _nameFormField() {
+    return TextFormField(
+      controller: _nameCtr,
+      decoration: InputDecoration(
+        hintText: "Enter your full name",
+        prefixText: "Full Name",
+      ),
+      textAlign: TextAlign.right,
+      validator: (value) {
+        if (!_validName(value)) {
+          return 'Please enter your full name';
+        }
+        return null;
+      },
     );
   }
 
@@ -212,7 +233,7 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
     if (_formKey.currentState.validate()) {
       try {
         await AuthProvider.of(context)
-            .createUserWithEmailAndPassword(_emailCtr.text, _passwordCtr.text);
+            .createUserWithEmailAndPassword(_emailCtr.text, _passwordCtr.text, name: _nameCtr.text);
         Navigator.popUntil(context, ModalRoute.withName("/home"));
       } on AuthException catch (e) {
         _scaffoldKey.currentState
@@ -222,6 +243,14 @@ class _SignInEmailScreenState extends State<SignInEmailScreen> {
         _scaffoldKey.currentState
             .showSnackBar(SnackBar(content: Text("Something went wrong")));
       }
+    }
+  }
+
+  bool _validName(String name) {
+    if (name.split(' ').length  < 2) {
+      return false;
+    } else {
+      return true;
     }
   }
 
