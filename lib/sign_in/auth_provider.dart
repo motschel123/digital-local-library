@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/sign_in/auth.dart';
 
+export 'package:digital_local_library/sign_in/auth.dart';
+
+
 class AuthProvider extends InheritedWidget {
   final BaseAuth auth;
 

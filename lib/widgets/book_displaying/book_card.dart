@@ -1,6 +1,4 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:digital_local_library/sign_in/auth.dart';
-import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
 
