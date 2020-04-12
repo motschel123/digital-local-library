@@ -18,7 +18,6 @@ class BooksDatabaseModel extends Model {
             // Description is an optional property
             String bookDescription =
                 dSnap.data.containsKey('description') ? dSnap.data['description'] : "";
-
             return new Book(
                 isbn: dSnap.data['isbn'].toString(),
                 title: dSnap.data['title'].toString(),
@@ -39,7 +38,7 @@ class BooksDatabaseModel extends Model {
 
   Future<bool> uploadBook({@required Book book}) async {
     try {
-      await Firestore.instance.collection("books").add({
+      await Firestore.instance.collection("books").document(book.isbn).setData({
         'author': book.author,
         'title': book.title,
         'isbn': book.isbn,
