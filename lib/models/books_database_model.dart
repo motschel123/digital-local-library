@@ -24,7 +24,7 @@ class BooksDatabaseModel extends Model {
                 author: dSnap.data['author'].toString(),
                 imagePath: dSnap.data['imagePath'].toString(),
                 description: bookDescription,
-                uid: dSnap.data['uid'].toString());
+                owner: dSnap.data['owner'].toString());
           })
           .toList()
           .reversed
@@ -44,7 +44,7 @@ class BooksDatabaseModel extends Model {
         'isbn': book.isbn,
         'imagePath': book.imagePath,
         'description': book.description,
-        'uid': book.uid,
+        'owner': book.owner,
       });
     } catch (e) {
       return false;

@@ -64,14 +64,14 @@ class Book extends BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-  final String uid;
+  final String owner;
 
   Book({
     @required this.isbn,
     @required this.title,
     @required this.author,
     @required this.imagePath,
-    @required this.uid,
+    @required this.owner,
     String description
   }) {
     this._description = description;
