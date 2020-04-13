@@ -65,7 +65,7 @@ class Book extends BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-  final User owner;
+  final String owner;
 
   Book({
     @required this.isbn,

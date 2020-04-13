@@ -1,5 +1,4 @@
 import 'package:digital_local_library/data/book.dart';
-import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -17,8 +16,9 @@ class BooksDatabaseModel extends Model {
       _books = querySnapshot.documents
           .map((dSnap) {
             // Description is an optional property
-            String bookDescription =
-                dSnap.data.containsKey('description') ? dSnap.data['description'] : "";
+            String bookDescription = dSnap.data.containsKey('description')
+                ? dSnap.data['description']
+                : "";
 
             return new Book(
                 isbn: dSnap.data['isbn'].toString(),
@@ -26,7 +26,7 @@ class BooksDatabaseModel extends Model {
                 author: dSnap.data['author'].toString(),
                 imagePath: dSnap.data['imagePath'].toString(),
                 description: bookDescription,
-                owner: OtherUser.fromDocumentSnapshot(documentSnapshot: dSnap));
+                owner: dSnap.data['owner'].toString());
           })
           .toList()
           .reversed
@@ -46,7 +46,7 @@ class BooksDatabaseModel extends Model {
         'isbn': book.isbn,
         'imagePath': book.imagePath,
         'description': book.description,
-
+        'owner': book.owner,
       });
     } catch (e) {
       return false;
