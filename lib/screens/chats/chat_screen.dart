@@ -1,12 +1,16 @@
 import 'package:cloud_firestore/cloud_firestore.dart';
-import 'package:digital_local_library/models/chat_model.dart';
+import 'package:digital_local_library/data/message.dart';
 import 'package:flutter/material.dart';
 
 class ChatScreen extends StatefulWidget {
-  final String peerId;
-  final String peerAvatar;
+  final String peerName;
+  final String peerPhotoUrl;
+  final DocumentSnapshot chatDocument;
 
-  ChatScreen({@required this.peerId, @required this.peerAvatar});
+  ChatScreen(
+      {@required this.peerName,
+      @required this.peerPhotoUrl,
+      @required this.chatDocument});
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -26,19 +30,29 @@ class _ChatScreenState extends State<ChatScreen> {
         mainAxisSize: MainAxisSize.max,
         children: <Widget>[
           Expanded(
-            child: StreamBuilder<List<DocumentSnapshot>>(
-                stream: ChatModel().stream,
+            child: StreamBuilder<List<Message>>(
+                stream: widget.chatDocument.reference
+                    .collection('messages')
+                    .orderBy('timestamp')
+                    .limit(10)
+                    .snapshots()
+                    .map<List<Message>>(
+                      (querySnapshot) => querySnapshot.documents.map<Message>(
+                        (dSnap) => Message(
+                          text: dSnap.data['text'],
+                          username: '',
+                          timestamp: dSnap.data['timestamp'],
+                        ),
+                      ),
+                    ),
                 builder: (context, snapshot) {
-                  if (snapshot.hasData) {
-                    return ListView.builder(
-                      reverse: true,
-                      itemCount: snapshot.data.length,
-                      itemBuilder: (context, index) {
-                        return MessageWidget();
-                      },
-                    );
-                  }
-                  return CircularProgressIndicator();
+                  return snapshot.hasData
+                      ? ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) =>
+                              Text(snapshot.data.elementAt(index).text),
+                        )
+                      : Center(child: CircularProgressIndicator());
                 }),
           ),
           Padding(

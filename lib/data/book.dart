@@ -1,3 +1,4 @@
+import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
 import 'package:http/http.dart' as http;
@@ -64,14 +65,14 @@ class Book extends BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-  final String uid;
+  final User owner;
 
   Book({
     @required this.isbn,
     @required this.title,
     @required this.author,
     @required this.imagePath,
-    @required this.uid,
+    @required this.owner,
     String description
   }) {
     this._description = description;

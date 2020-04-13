@@ -8,7 +8,6 @@ import 'package:flutter/material.dart';
 abstract class User {
   String get displayName;
   String get email;
-  String get uid;
   String get phoneNumber;
   String get photoUrl;
 
@@ -153,8 +152,7 @@ class OtherUser extends User {
   String _displayName;
   String _email;
   String _phoneNumber;
-  String _photoUrl;  
-  String _uid;
+  String _photoUrl;
   bool _isAnonymous;
   bool _isEmailVerified;
 
@@ -166,10 +164,8 @@ class OtherUser extends User {
   OtherUser.fromDocumentSnapshot({@required DocumentSnapshot documentSnapshot})
       : assert(documentSnapshot != null),
         assert(documentSnapshot['displayName'] != null),
-        assert(documentSnapshot['email'] != null),
-        assert(documentSnapshot['uid'] != null) {
+        assert(documentSnapshot['email'] != null){
     this._displayName = documentSnapshot['displayName'];
-    this._uid = documentSnapshot['uid'];
     this._email = documentSnapshot['email'];
 
     this._isAnonymous = documentSnapshot['isAnonymous'];
@@ -195,7 +191,4 @@ class OtherUser extends User {
 
   @override
   String get photoUrl => _photoUrl;
-
-  @override
-  String get uid => _uid;
 }

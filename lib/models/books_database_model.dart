@@ -1,4 +1,5 @@
 import 'package:digital_local_library/data/book.dart';
+import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -25,7 +26,7 @@ class BooksDatabaseModel extends Model {
                 author: dSnap.data['author'].toString(),
                 imagePath: dSnap.data['imagePath'].toString(),
                 description: bookDescription,
-                uid: dSnap.data['uid'].toString());
+                owner: OtherUser.fromDocumentSnapshot(documentSnapshot: dSnap));
           })
           .toList()
           .reversed
@@ -45,7 +46,7 @@ class BooksDatabaseModel extends Model {
         'isbn': book.isbn,
         'imagePath': book.imagePath,
         'description': book.description,
-        'uid': book.uid,
+
       });
     } catch (e) {
       return false;
