@@ -1,27 +1,39 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digital_local_library/data/message.dart';
+import 'package:digital_local_library/sqlite_db/chat_database_provider.dart';
 import 'package:flutter/material.dart';
 
 class Chat {
-  static newChat(
-      {@required String peerDisplayName, @required String currentUserDisplayName}) async {
-    Map<String, dynamic> data = {
-      'peers': <String>[peerDisplayName, currentUserDisplayName],
+  /// Supposed to be the document id of the
+  /// chat document in firestore '/chats'
+  int db_id;
+  String chatDocumentId;
+  String peerName;
+  String peerAvatarURL;
+  List<Message> messages;
+
+  Chat({
+    this.chatDocumentId,
+    @required this.peerName,
+    @required this.peerAvatarURL,
+    this.messages = const <Message>[],
+  });
+
+  Map<String, dynamic> toMap() {
+    Map<String, dynamic> map = {
+      ChatDatabaseProvider.COLUMN_PEERNAME : peerName,
+      ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL: peerAvatarURL,
+      ChatDatabaseProvider.COLUMN_MESSAGES: messages,
+      ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID: chatDocumentId,
     };
-    List<Map<String, dynamic>> messages = <Map<String, dynamic>>[
-      {'text': 'Hey marcel', 'timestamp': Timestamp.now()},
-      {'text': 'hey', 'timestamp': Timestamp.now()}
-    ];
-
-    DocumentReference ref =
-        await Firestore.instance.collection('chats').add(data);
-
-    messages.forEach((data) {
-      ref.collection('messages').add(data);
-    });
+    if(db_id == null) {
+     
+    }
   }
 
-  List<Message> messages;
-  String peerName;
-  String peerAvatar;
+  Chat.fromMap(Map<String, dynamic> map) {
+    id = int.tryParse(map[ChatDatabaseProvider.COLUMN_ID]);
+    peerName = map[ChatDatabaseProvider.COLUMN_PEERNAME];
+    peerAvatarURL = map[ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL];
+    messages = [];
+  }
 }
