@@ -9,7 +9,7 @@ import 'package:scoped_model/scoped_model.dart';
 class ChatsOverviewModel extends Model {
   final Future<CurrentUser> currentUser;
 
-  List<Chat> _chats;
+  List<Chat> _chats = [];
   List<Chat> get chats => _chats;
 
   ChatsOverviewModel({@required this.currentUser}) {
@@ -19,9 +19,9 @@ class ChatsOverviewModel extends Model {
         querySnap.documents.forEach((docSnap) {
           if(docSnap.exists){
             chatsList.add(Chat.fromMap({
-            ChatDatabaseProvider.COLUMN_ID: docSnap.data['chatReference'],
-            ChatDatabaseProvider.COLUMN_PEERNAME: docSnap.data['peerName'],
-            ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL: docSnap.data['peerAvatarURL'],
+            ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID: docSnap.data[ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID],
+            ChatDatabaseProvider.COLUMN_PEERNAME: docSnap.data[ChatDatabaseProvider.COLUMN_PEERNAME],
+            ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL: docSnap.data[ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL],
           }));
           }
         });

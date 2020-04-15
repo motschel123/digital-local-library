@@ -5,6 +5,7 @@ import 'package:sqflite/sqflite.dart';
 
 class ChatDatabaseProvider extends DatabaseProvider{
   static const String TABLE_CHAT = "chat";
+  static const String COLUMN_DATABASE_ID = "dbId";
   static const String COLUMN_CHAT_DOCUMENT_ID = "chatDocumentId";
   static const String COLUMN_PEERNAME = "peerName";
   static const String COLUMN_PEER_AVATAR_URL = "peerAvatarURL";
@@ -30,7 +31,8 @@ class ChatDatabaseProvider extends DatabaseProvider{
       onCreate: (db, version) async {
         (await database).execute(
           "CREATE TABLE $TABLE_CHAT ("
-          "$COLUMN_CHAT_DOCUMENT_ID TEXT PRIMARY KEY,"
+          "$COLUMN_DATABASE_ID INTEGER PRIMARY KEY"
+          "$COLUMN_CHAT_DOCUMENT_ID TEXT,"
           "$COLUMN_PEERNAME TEXT,"
           "$COLUMN_PEER_AVATAR_URL TEXT,"
           "$COLUMN_MESSAGES TEXT"
@@ -57,7 +59,7 @@ class ChatDatabaseProvider extends DatabaseProvider{
 
   Future<Chat> insert(Chat chat) async {
     final Database db = await database;
-    chat.id = await db.insert(TABLE_CHAT, chat.toMap());
+    chat.dbId = await db.insert(TABLE_CHAT, chat.toMap());
     return chat;
   }
 }

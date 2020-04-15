@@ -1,13 +1,16 @@
 import 'package:digital_local_library/data/chat.dart';
 import 'package:digital_local_library/data/message.dart';
 import 'package:digital_local_library/models/messages_model.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
 class ChatScreen extends StatefulWidget {
   final Chat chat;
 
-  ChatScreen({Key key, @required this.chat}) : super(key: key);
+  ChatScreen({Key key, @required this.chat})
+      : assert(chat != null),
+        super(key: key);
 
   @override
   _ChatScreenState createState() => _ChatScreenState();
@@ -25,7 +28,7 @@ class _ChatScreenState extends State<ChatScreen> {
   @override
   Widget build(BuildContext context) {
     return ScopedModel<MessagesModel>(
-      model: MessagesModel(),
+      model: MessagesModel(chat: widget.chat),
       child: Scaffold(
         appBar: AppBar(
           title: Text("Chat"),
@@ -36,17 +39,18 @@ class _ChatScreenState extends State<ChatScreen> {
           children: <Widget>[
             Expanded(
               child: ScopedModelDescendant<MessagesModel>(
-                builder: (context, widget, messagesModel) {
+                builder: (context, _, messagesModel) {
                   return Center(
                     child: messagesModel.messages.isEmpty
                         ? ListView(
                             children: <Widget>[
                               Container(
                                 padding: EdgeInsets.all(8.0),
-                                  alignment: Alignment.topCenter,
-                                  child: Text(
-                                    'No messages yet',
-                                  ))
+                                alignment: Alignment.topCenter,
+                                child: Text(
+                                  "${widget.chat.chatDocumentId}",
+                                ),
+                              ),
                             ],
                           )
                         : ListView.builder(
@@ -77,17 +81,29 @@ class _ChatScreenState extends State<ChatScreen> {
                       ),
                     ),
                   ),
-                  RawMaterialButton(
-                    child: Icon(Icons.send),
-                    shape: CircleBorder(),
-                    fillColor: Colors.cyan,
-                    onPressed: () {
-                      if (_formStateKey.currentState.validate()) {
-                        // ScopedModel.of<MessagesModel>(context);
-                        _msgCtr.clear();
-                      }
-                      FocusScope.of(context).unfocus();
-                    },
+                  Builder(
+                    builder: (context) => RawMaterialButton(
+                      child: Icon(Icons.send),
+                      shape: CircleBorder(),
+                      fillColor: Colors.cyan,
+                      onPressed: () async {
+                        if (_formStateKey.currentState.validate()) {
+                          await ScopedModel.of<MessagesModel>(context,
+                                  rebuildOnChange: false)
+                              .newMessage(
+                            Message(
+                              dateTime: DateTime.now(),
+                              text: _msgCtr.text,
+                              username:
+                                  (await AuthProvider.of(context).currentUser())
+                                      .displayName,
+                            ),
+                          );
+                          _msgCtr.clear();
+                        }
+                        FocusScope.of(context).unfocus();
+                      },
+                    ),
                   ),
                 ],
               ),
