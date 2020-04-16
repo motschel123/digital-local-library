@@ -4,6 +4,13 @@ import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
+  static const String FIELD_TITLE = 'title';
+  static const String FIELD_OWNER = 'owner';
+  static const String FIELD_ISBN = 'isbn';
+  static const String FIELD_IMAGE_PATH = 'imagePath';
+  static const String FIELD_DESCRIPTION = 'description';
+  static const String FIELD_AUTHOR = 'author';
+
   Stream<QuerySnapshot> _stream;
 
   List<Book> _books = [];
@@ -16,17 +23,17 @@ class BooksDatabaseModel extends Model {
       _books = querySnapshot.documents
           .map((dSnap) {
             // Description is an optional property
-            String bookDescription = dSnap.data.containsKey('description')
-                ? dSnap.data['description']
+            String bookDescription = dSnap.data.containsKey(FIELD_DESCRIPTION)
+                ? dSnap.data[FIELD_DESCRIPTION]
                 : "";
 
             return new Book(
-                isbn: dSnap.data['isbn'].toString(),
-                title: dSnap.data['title'].toString(),
-                author: dSnap.data['author'].toString(),
-                imagePath: dSnap.data['imagePath'].toString(),
+                isbn: dSnap.data[FIELD_ISBN].toString(),
+                title: dSnap.data[FIELD_TITLE].toString(),
+                author: dSnap.data[FIELD_AUTHOR].toString(),
+                imagePath: dSnap.data[FIELD_IMAGE_PATH].toString(),
                 description: bookDescription,
-                owner: dSnap.data['owner'].toString());
+                owner: dSnap.data[FIELD_OWNER]);
           })
           .toList()
           .reversed
