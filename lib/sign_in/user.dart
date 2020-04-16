@@ -6,13 +6,18 @@ import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 abstract class User {
+  static const String FIELD_DISPLAYNAME = 'displayName';
+  static const String FIELD_PHOTOURL = 'photoUrl';
+
   String get displayName;
-  String get email;
-  String get phoneNumber;
   String get photoUrl;
 
-  bool get isAnonymous;
-  bool get isEmailVerified;
+  Map<String, dynamic> toMap() {
+    return {
+      FIELD_DISPLAYNAME: displayName,
+      FIELD_PHOTOURL: photoUrl,
+    };
+  }
 }
 
 class CurrentUser implements User {
@@ -132,8 +137,15 @@ class CurrentUser implements User {
   }
 
   Future<String> get documentId async {
-    if(_documentId == null) {
-      _documentId = (await Firestore.instance.collection('users').where('uid', isEqualTo: _uid).snapshots().single).documents.single.documentID;
+    if (_documentId == null) {
+      _documentId = (await Firestore.instance
+              .collection('users')
+              .where('uid', isEqualTo: _uid)
+              .snapshots()
+              .single)
+          .documents
+          .single
+          .documentID;
     }
     return _documentId;
   }
@@ -146,48 +158,42 @@ class CurrentUser implements User {
 
   bool get isAnonymous => _isAnonymous;
   bool get isEmailVerified => _isEmailVerified;
+
+  Map<String, dynamic> toMap() {
+    return {
+      User.FIELD_DISPLAYNAME: _displayName,
+      User.FIELD_PHOTOURL: photoUrl,
+    };
+  }
 }
 
 class OtherUser extends User {
   String _displayName;
-  String _email;
-  String _phoneNumber;
   String _photoUrl;
-  bool _isAnonymous;
-  bool _isEmailVerified;
 
   /// The DocumentSnapshot must provide the following key:value pairs:
-  /// 'displayName', 'email', 'uid'
+  /// 'displayName', 'email'
   ///
   /// The following key:value pairs are optional and possible null
   /// 'photoUrl', 'phoneNumber', 'isAnonymous', 'isEmailVerified'
-  OtherUser.fromDocumentSnapshot({@required DocumentSnapshot documentSnapshot})
-      : assert(documentSnapshot != null),
-        assert(documentSnapshot['displayName'] != null),
-        assert(documentSnapshot['email'] != null){
-    this._displayName = documentSnapshot['displayName'];
-    this._email = documentSnapshot['email'];
+  @override
+  OtherUser.fromMap(Map<String, dynamic> map)
+      : assert(map != null),
+        assert(map[User.FIELD_DISPLAYNAME] != null),
+        assert(map[User.FIELD_PHOTOURL] != null) {
+    this._displayName = map[User.FIELD_DISPLAYNAME];
+    this._photoUrl = map[User.FIELD_PHOTOURL];
+  }
 
-    this._isAnonymous = documentSnapshot['isAnonymous'];
-    this._isEmailVerified = documentSnapshot['isEmailVerified'];
-    this._phoneNumber = documentSnapshot['phoneNumber'];
-    this._photoUrl = documentSnapshot['photoUrl'];
+  Map<String, dynamic> toMap() {
+    return {
+      User.FIELD_DISPLAYNAME: _displayName,
+      User.FIELD_PHOTOURL: _photoUrl,
+    };
   }
 
   @override
   String get displayName => _displayName;
-
-  @override
-  String get email => _email;
-
-  @override
-  bool get isAnonymous => _isAnonymous;
-
-  @override
-  bool get isEmailVerified => _isEmailVerified;
-
-  @override
-  String get phoneNumber => _phoneNumber;
 
   @override
   String get photoUrl => _photoUrl;
