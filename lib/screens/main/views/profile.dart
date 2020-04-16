@@ -18,7 +18,7 @@ class ProfileView extends StatelessWidget {
           ),
           StreamBuilder(
             stream: AuthProvider.of(context).currentUser().asStream(),
-            builder: (context, AsyncSnapshot<User> snapshot) {
+            builder: (context, AsyncSnapshot<CurrentUser> snapshot) {
               if (snapshot.hasData) {
                 if (snapshot.data.isAnonymous) {
                   return Text("Anonymous");

@@ -4,7 +4,7 @@ import 'package:flutter/material.dart';
 class SignOutButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return StreamBuilder<User>(
+    return StreamBuilder<CurrentUser>(
       stream: AuthProvider.of(context).currentUser().asStream(),
       builder: (context, snapshot) {
         if(snapshot.hasData) {
