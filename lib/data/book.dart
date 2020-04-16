@@ -1,3 +1,4 @@
+import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -41,7 +42,8 @@ class BookBase {
         String _bookThumbnail = bookData.containsKey('imageLinks')
             ? bookData['imageLinks']['thumbnail']
             : "";
-        String _bookDescription = bookData.containsKey('description') ? bookData['description'] : "";
+        String _bookDescription =
+            bookData.containsKey('description') ? bookData['description'] : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
 
         return BookBase(
@@ -65,17 +67,38 @@ class Book extends BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-  final String owner;
+  final User owner;
 
-  Book({
-    @required this.isbn,
-    @required this.title,
-    @required this.author,
-    @required this.imagePath,
-    @required this.owner,
-    String description
-  }) {
+  Book(
+      {@required this.title,
+      @required this.author,
+      @required this.imagePath,
+      @required this.isbn,
+      @required this.owner,
+      String description}) {
     this._description = description;
+  }
+
+  static Book fromMap(Map<String, dynamic> map) {
+    return Book(
+      title: map['${BooksDatabaseModel.FIELD_TITLE}'],
+      author: map['${BooksDatabaseModel.FIELD_AUTHOR}'],
+      imagePath: map['${BooksDatabaseModel.FIELD_IMAGE_PATH}'],
+      isbn: map['${BooksDatabaseModel.FIELD_ISBN}'],
+      owner: OtherUser.fromMap(map['${BooksDatabaseModel.FIELD_OWNER}']),
+      description: map['${BooksDatabaseModel.FIELD_DESCRIPTION}'] != null ? map['${BooksDatabaseModel.FIELD_DESCRIPTION}'] : "",
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      '${BooksDatabaseModel.FIELD_TITLE}': title,
+      '${BooksDatabaseModel.FIELD_AUTHOR}': author,
+      '${BooksDatabaseModel.FIELD_IMAGE_PATH}': imagePath,
+      '${BooksDatabaseModel.FIELD_ISBN}': isbn,
+      '${BooksDatabaseModel.FIELD_OWNER}': owner.toMap(),
+      '${BooksDatabaseModel.FIELD_DESCRIPTION}': description,
+    };
   }
 
   bool containsString(String str) {

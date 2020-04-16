@@ -1,4 +1,5 @@
 import 'package:digital_local_library/data/book.dart';
+import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:scoped_model/scoped_model.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
@@ -33,7 +34,7 @@ class BooksDatabaseModel extends Model {
                 author: dSnap.data[FIELD_AUTHOR].toString(),
                 imagePath: dSnap.data[FIELD_IMAGE_PATH].toString(),
                 description: bookDescription,
-                owner: dSnap.data[FIELD_OWNER]);
+                owner: OtherUser.fromMap(dSnap.data[FIELD_OWNER]));
           })
           .toList()
           .reversed
