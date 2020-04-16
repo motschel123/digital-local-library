@@ -29,6 +29,7 @@ class Chat {
     if(dbId != null) {
       map[ChatDatabaseProvider.COLUMN_DATABASE_ID] = dbId;
     }
+    return map;
   }
 
   Chat.fromMap(Map<String, dynamic> map) {

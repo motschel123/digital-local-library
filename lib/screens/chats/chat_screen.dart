@@ -31,7 +31,23 @@ class _ChatScreenState extends State<ChatScreen> {
       model: MessagesModel(chat: widget.chat),
       child: Scaffold(
         appBar: AppBar(
-          title: Text("Chat"),
+          title: Row(
+            children: <Widget>[
+              Container(
+                width: 40,
+                height: 40,
+                decoration: BoxDecoration(
+                  shape: BoxShape.circle,
+                  image: DecorationImage(
+                    fit: BoxFit.scaleDown,
+                    image: NetworkImage(widget.chat.peerAvatarURL),
+                  ),
+                ),
+              ),
+              Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+              Text(widget.chat.peerName),
+            ],
+          ),
         ),
         body: Column(
           mainAxisAlignment: MainAxisAlignment.start,
@@ -45,10 +61,18 @@ class _ChatScreenState extends State<ChatScreen> {
                         ? ListView(
                             children: <Widget>[
                               Container(
-                                padding: EdgeInsets.all(8.0),
                                 alignment: Alignment.topCenter,
-                                child: Text(
-                                  "${widget.chat.chatDocumentId}",
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    borderRadius:
+                                        BorderRadius.all(Radius.circular(8)),
+                                    color: Theme.of(context).accentColor,
+                                  ),
+                                  padding: EdgeInsets.all(8.0),
+                                  child: Text(
+                                    "No messages yet",
+                                    textScaleFactor: 2,
+                                  ),
                                 ),
                               ),
                             ],
@@ -59,6 +83,7 @@ class _ChatScreenState extends State<ChatScreen> {
                               return MessageWidget(
                                 message:
                                     messagesModel.messages.elementAt(index),
+                                peerName: messagesModel.chat.peerName,
                               );
                             },
                           ),
@@ -116,34 +141,38 @@ class _ChatScreenState extends State<ChatScreen> {
 }
 
 class MessageWidget extends StatelessWidget {
-  final Message message;
+  static const Color COLOR_PEER = Colors.grey;
+  static const Color COLOR_USER = Colors.lightGreen;
 
-  MessageWidget({@required this.message});
+  final Message message;
+  final String peerName;
+
+  MessageWidget({@required this.message, @required this.peerName});
 
   @override
   Widget build(BuildContext context) {
+    final bool isLeft = message.username == peerName;
     return Container(
-      margin: EdgeInsets.all(7.0),
-      padding: EdgeInsets.all(8.0),
-      color: Colors.lightGreen,
-      alignment: Alignment.topLeft,
-      child: Container(
-        child: Column(
-          children: <Widget>[
-            Align(
-              alignment: Alignment.topLeft,
-              child: Text(message.text),
-            ),
-            Align(
-              alignment: Alignment.bottomLeft,
-              child: Text(
+      alignment: isLeft ? Alignment.topLeft : Alignment.topRight,
+      padding: const EdgeInsets.symmetric(horizontal: 10.0),
+      child: Card(
+        color: message.username == peerName ? COLOR_PEER : COLOR_USER,
+        child: Container(
+          padding: EdgeInsets.all(8.0),
+          constraints: BoxConstraints(maxWidth: 250),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: <Widget>[
+              Text(message.text),
+              Text(
                 message.dateTime.hour.toString() +
                     ":" +
                     message.dateTime.minute.toString(),
                 style: TextStyle(fontSize: 10),
               ),
-            ),
-          ],
+            ],
+          ),
         ),
       ),
     );
