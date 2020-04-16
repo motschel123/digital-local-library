@@ -4,10 +4,19 @@ import 'package:flutter/material.dart';
 class SettingsView extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
-      body: SignOutButton(),
+      body: Column(
+        children: <Widget>[
+          MaterialButton(
+              child: Text("Chat"),
+              onPressed: () {
+                Navigator.pushNamed(context, '/home/chats');
+              }),
+          SignOutButton(),
+        ],
+      ),
       appBar: AppBar(
         title: Text('Settings'),
       ),
     );
   }
-} 
+}

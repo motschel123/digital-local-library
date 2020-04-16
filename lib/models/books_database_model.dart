@@ -16,8 +16,10 @@ class BooksDatabaseModel extends Model {
       _books = querySnapshot.documents
           .map((dSnap) {
             // Description is an optional property
-            String bookDescription =
-                dSnap.data.containsKey('description') ? dSnap.data['description'] : "";
+            String bookDescription = dSnap.data.containsKey('description')
+                ? dSnap.data['description']
+                : "";
+
             return new Book(
                 isbn: dSnap.data['isbn'].toString(),
                 title: dSnap.data['title'].toString(),
