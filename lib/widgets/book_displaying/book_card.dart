@@ -1,4 +1,7 @@
 import 'package:cached_network_image/cached_network_image.dart';
+import 'package:digital_local_library/data/chat.dart';
+import 'package:digital_local_library/screens/chats/chat_screen.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
 
@@ -56,16 +59,33 @@ class BookCard implements ExpansionPanelRadio {
                 ),
                 child: Container(
                   alignment: FractionalOffset.bottomCenter,
-                  child: Text("from: disabled for now"), //${book.uid}"),
+                  child: Text("from: ${book.owner.displayName}"),
                 ),
               ),
-              Container(
-                alignment: FractionalOffset.centerRight,
-                child: FlatButton(
-                  onPressed: () {},
-                  child: Text("Message"),
-                ),
-              ),
+              Builder(builder: (context) {
+                return Container(
+                  alignment: FractionalOffset.centerRight,
+                  child: FlatButton(
+                    onPressed: () async {
+                      String currentUsername =
+                          (await AuthProvider.of(context).currentUser())
+                              .displayName;
+                      if (currentUsername == book.owner.displayName) {
+                        Scaffold.of(context).showSnackBar(SnackBar(
+                          content: Text("That's your own book"),
+                        ));
+                      } else {
+                        Chat newChat = Chat(
+                            peerName: book.owner.displayName,
+                            peerAvatarURL: book.owner.photoUrl,
+                            currentUserName: currentUsername);
+                        newChat.pushChatScreen(context);
+                      }
+                    },
+                    child: Text("Message"),
+                  ),
+                );
+              }),
             ],
           ),
           if (book.description != "") _buildBookDescription(),

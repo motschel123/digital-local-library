@@ -1,5 +1,5 @@
 import 'package:digital_local_library/data/chat.dart';
-import 'package:digital_local_library/models/chats_overview_model.dart';
+import 'package:digital_local_library/models/chats_model.dart';
 import 'package:digital_local_library/screens/chats/chat_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
@@ -9,7 +9,7 @@ class ChatsOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Chats")),
-      body: ScopedModelDescendant<ChatsOverviewModel>(
+      body: ScopedModelDescendant<ChatsModel>(
         rebuildOnChange: true,
         builder: (context, widget, chatsModel) {
           if (chatsModel.chats.isEmpty) {

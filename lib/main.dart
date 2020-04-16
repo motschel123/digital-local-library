@@ -1,6 +1,6 @@
 import 'package:digital_local_library/models/appbar_model.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
-import 'package:digital_local_library/models/chats_overview_model.dart';
+import 'package:digital_local_library/models/chats_model.dart';
 import 'package:digital_local_library/screens/chats/chats_overview_screen.dart';
 import 'package:digital_local_library/screens/landing_screen.dart';
 import 'package:digital_local_library/screens/sign_in/sign_in_screen.dart';
@@ -25,8 +25,8 @@ class MyApp extends StatelessWidget {
         model: AppBarModel(),
         child: ScopedModel<BooksDatabaseModel>(
           model: BooksDatabaseModel(),
-          child: ScopedModel<ChatsOverviewModel>(
-            model: ChatsOverviewModel(
+          child: ScopedModel<ChatsModel>(
+            model: ChatsModel(
               currentUser: auth.currentUser(),
             ),
             child: MaterialApp(

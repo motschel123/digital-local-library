@@ -6,15 +6,15 @@ import 'package:digital_local_library/sqlite_db/chat_database_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
-class ChatsOverviewModel extends Model {
+class ChatsModel extends Model {
   final Future<CurrentUser> currentUser;
 
   List<Chat> _chats = [];
   List<Chat> get chats => _chats;
 
-  ChatsOverviewModel({@required this.currentUser}) {
+  ChatsModel({@required this.currentUser}) {
     currentUser.then((currentUser) {
-      Firestore.instance.collection('users').document(currentUser.uid).collection('chats').snapshots().map((querySnap) {
+      Firestore.instance.collection('users').document(currentUser.uid).collection('userChats').snapshots().map((querySnap) {
         List<Chat> chatsList = <Chat>[];
         querySnap.documents.forEach((docSnap) {
           if(docSnap.exists){
@@ -30,6 +30,11 @@ class ChatsOverviewModel extends Model {
         _chats = chatsList;
         notifyListeners();
       });
-    }); 
+    });
+  }
+
+  Future<Chat> chatWithPeer(String peerName) async {
+    currentUser.then((currentUser) {
+    });
   }
 }
