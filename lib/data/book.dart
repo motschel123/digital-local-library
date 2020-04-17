@@ -1,3 +1,4 @@
+import 'package:digital_local_library/consts/field_name.dart';
 import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -8,19 +9,14 @@ class BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-
-  String _description = "";
+  final String description;
 
   BookBase(
       {@required this.isbn,
       @required this.title,
       @required this.author,
       @required this.imagePath,
-      String description}) {
-    _description = description;
-  }
-
-  String get description => _description;
+      this.description = ""}) {}
 
   static Future<BookBase> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
@@ -41,7 +37,8 @@ class BookBase {
         String _bookThumbnail = bookData.containsKey('imageLinks')
             ? bookData['imageLinks']['thumbnail']
             : "";
-        String _bookDescription = bookData.containsKey('description') ? bookData['description'] : "";
+        String _bookDescription =
+            bookData.containsKey('description') ? bookData['description'] : "";
         String _bookIsbn = bookData['industryIdentifiers'][1]['identifier'];
 
         return BookBase(
@@ -73,9 +70,29 @@ class Book extends BookBase {
     @required this.author,
     @required this.imagePath,
     @required this.owner,
-    String description
-  }) {
-    this._description = description;
+    String description = "",
+  });
+
+  static Book fromMap(Map<String, dynamic> map) {
+    return Book(
+      title: map[BOOK_TITLE].toString(),
+      author: map[BOOK_AUTHOR].toString(),
+      imagePath: map[BOOK_IMAGE_PATH].toString(),
+      isbn: map[BOOK_ISBN].toString(),
+      owner: map[BOOK_OWNER]['displayName'].toString(),
+      description: map[BOOK_DESCRIPTION].toString(),
+    );
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      BOOK_AUTHOR: author,
+      BOOK_TITLE: title,
+      BOOK_ISBN: isbn,
+      BOOK_IMAGE_PATH: imagePath,
+      BOOK_DESCRIPTION: description,
+      BOOK_OWNER: {'displayName': owner},
+    };
   }
 
   bool containsString(String str) {
