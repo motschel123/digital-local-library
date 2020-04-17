@@ -1,56 +1,34 @@
 import 'package:digital_local_library/data/book.dart';
-import 'package:flutter/cupertino.dart';
+import 'package:digital_local_library/firebase_interfaces/books.dart';
 import 'package:scoped_model/scoped_model.dart';
-import 'package:cloud_firestore/cloud_firestore.dart';
 
 class BooksDatabaseModel extends Model {
-  Stream<QuerySnapshot> _stream;
+  BooksInterface _booksInterface = BooksInterface();
 
   List<Book> _books = [];
-
   List<Book> get books => _books;
 
-  BooksDatabaseModel() {
-    _stream = Firestore.instance.collection("books").snapshots();
-    _stream.listen((querySnapshot) {
-      _books = querySnapshot.documents
-          .map((dSnap) {
-            // Description is an optional property
-            String bookDescription = dSnap.data.containsKey('description')
-                ? dSnap.data['description']
-                : "";
+  BooksDatabaseModel(){
+    updateBooks();
+  }
 
-            return new Book(
-                isbn: dSnap.data['isbn'].toString(),
-                title: dSnap.data['title'].toString(),
-                author: dSnap.data['author'].toString(),
-                imagePath: dSnap.data['imagePath'].toString(),
-                description: bookDescription,
-                owner: dSnap.data['owner'].toString());
+  Future<void> updateBooks() async {
+    return _booksInterface.booksSnapshot.then((querySnap) {
+      _books = querySnap.documents
+          .map((dSnap) {
+            return Book.fromMap(dSnap.data);
           })
           .toList()
           .reversed
           .toList();
+          return;
+    }).then<void>((_) {
+      notifyListeners();
+      return;
     });
   }
 
-  void updateBooks() {
-    notifyListeners();
-  }
-
-  Future<bool> uploadBook({@required Book book}) async {
-    try {
-      await Firestore.instance.collection("books").document(book.isbn).setData({
-        'author': book.author,
-        'title': book.title,
-        'isbn': book.isbn,
-        'imagePath': book.imagePath,
-        'description': book.description,
-        'owner': book.owner,
-      });
-    } catch (e) {
-      return false;
-    }
-    return true;
+  Future<void> uploadBook(Book book) async {
+    return _booksInterface.uploadBook(book);
   }
 }
