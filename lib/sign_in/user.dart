@@ -179,8 +179,8 @@ class OtherUser extends User {
   @override
   OtherUser.fromMap(Map<String, dynamic> map)
       : assert(map != null),
-        assert(map[User.FIELD_DISPLAYNAME] != null),
-        assert(map[User.FIELD_PHOTOURL] != null) {
+        assert(map[User.FIELD_DISPLAYNAME] != null)/*,
+        assert(map[User.FIELD_PHOTOURL] != null)*/ {
     this._displayName = map[User.FIELD_DISPLAYNAME];
     this._photoUrl = map[User.FIELD_PHOTOURL];
   }
