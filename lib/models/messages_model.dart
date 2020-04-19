@@ -29,8 +29,8 @@ class MessagesModel extends Model {
     });
   }
 
-  Future<DocumentSnapshot> newMessage(Message message) {
-    _messagesRef.add(message.toMap());
+  Future<DocumentReference> newMessage(Message message) {
+    return _messagesRef.add(message.toMap());
   }
 
   static MessagesModel of(BuildContext context) =>

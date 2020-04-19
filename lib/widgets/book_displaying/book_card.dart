@@ -1,6 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
 import 'package:digital_local_library/data/chat.dart';
-import 'package:digital_local_library/screens/chats/chat_screen.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
@@ -78,7 +77,7 @@ class BookCard implements ExpansionPanelRadio {
                         Chat newChat = Chat(
                             peerName: book.owner.displayName,
                             peerAvatarURL: book.owner.photoUrl,
-                            currentUserName: currentUsername);
+                            peerUid: book.owner.uid);
                         newChat.pushChatScreen(context);
                       }
                     },

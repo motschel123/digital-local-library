@@ -20,6 +20,7 @@ class ChatDatabaseProvider extends DatabaseProvider{
       return _database;
     }
     _database = await createDatabase();
+    return _database;
   }
 
   Future<Database> createDatabase() async {
@@ -40,26 +41,5 @@ class ChatDatabaseProvider extends DatabaseProvider{
         );
       }
     );
-  }
-
-  Future<List<Chat>> getChats() async {
-    final Database db = await database;
-
-    var chats = await db.query(
-      TABLE_CHAT,
-      columns: [COLUMN_PEERNAME, COLUMN_PEER_AVATAR_URL],
-    );
-
-    List<Chat> chatList = List<Chat>();
-    chats.forEach((currentChat) {
-      chatList.add(Chat.fromMap(currentChat));
-    });
-    return chatList;
-  }
-
-  Future<Chat> insert(Chat chat) async {
-    final Database db = await database;
-    chat.dbId = await db.insert(TABLE_CHAT, chat.toMap());
-    return chat;
   }
 }

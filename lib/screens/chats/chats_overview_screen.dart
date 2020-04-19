@@ -34,8 +34,6 @@ class ChatsOverviewScreen extends StatelessWidget {
 class ChatCard extends StatelessWidget {
   final Chat chat;
 
-  /// DocumentSnapshot requires following key:value pairs
-  /// 'peerName', 'latestMessage', 'latestMessageFrom', 'photoUrl'
   ChatCard({@required this.chat}) : assert(chat != null);
 
   @override
