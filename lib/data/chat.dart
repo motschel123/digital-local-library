@@ -8,32 +8,19 @@ class Chat {
   /// Supposed to be the document id of the
   /// chat document in firestore '/chats'
   int dbId;
-  String currentUserName;
   String chatDocumentId;
+  String peerUid;
   String peerName;
   String peerAvatarURL;
   List<Message> messages;
 
-  Chat({
-    this.dbId,
-    this.chatDocumentId,
-    this.currentUserName,
-    @required this.peerName,
-    @required this.peerAvatarURL,
-    this.messages = const <Message>[],
-  })  : assert(chatDocumentId != null || currentUserName != null),
-        assert(currentUserName != peerName) {
-    if (chatDocumentId == null) {
-      Firestore.instance.collection('chats').add({
-        'peers': [
-          currentUserName,
-          peerName,
-        ],
-      }).then((docRef) {
-        chatDocumentId = docRef.documentID;
-      });
-    }
-  }
+  Chat(
+      {this.dbId,
+      this.chatDocumentId,
+      @required this.peerUid,
+      @required this.peerName,
+      @required this.peerAvatarURL,
+      this.messages = const <Message>[]});
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
@@ -48,7 +35,7 @@ class Chat {
     return map;
   }
 
-  Chat.fromMap(Map<String, dynamic> map) {
+  Chat.fromMap(Map<String, dynamic> map, {@required this.peerUid}) {
     dbId = map[ChatDatabaseProvider.COLUMN_DATABASE_ID];
     chatDocumentId = map[ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID];
     peerName = map[ChatDatabaseProvider.COLUMN_PEERNAME];
