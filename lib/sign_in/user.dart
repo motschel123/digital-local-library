@@ -8,9 +8,11 @@ import 'package:flutter/material.dart';
 abstract class User {
   static const String FIELD_DISPLAYNAME = 'displayName';
   static const String FIELD_PHOTOURL = 'photoUrl';
+  static const String FIELD_UID = 'uid';
 
   String get displayName;
   String get photoUrl;
+  String get uid;
 
   Map<String, dynamic> toMap() {
     return {
@@ -26,7 +28,6 @@ class CurrentUser implements User {
   String _uid;
   String _phoneNumber;
   String _photoUrl;
-  String _documentId;
 
   bool _isAnonymous = true;
   bool _isEmailVerified = false;
@@ -65,7 +66,6 @@ class CurrentUser implements User {
     await _syncChangesToDatabase(
         displayNameChanged: isDisplayName,
         emailChanged: isEmail,
-        uidChanged: false,
         phoneNumberChanged: false,
         photoUrlChange: isPhotoUrl);
   }
@@ -108,46 +108,28 @@ class CurrentUser implements User {
   Future<void> _syncChangesToDatabase({
     @required bool displayNameChanged,
     @required bool emailChanged,
-    @required bool uidChanged,
     @required bool phoneNumberChanged,
     @required bool photoUrlChange,
   }) async {
     WriteBatch writeBatch = Firestore.instance.batch();
     try {
-      DocumentReference userRef = (await Firestore.instance
-              .collection('users')
-              .where('uid', isEqualTo: _uid)
-              .getDocuments())
-          .documents
-          .single
-          .reference;
-      Map<String, String> changedData = {};
-      if (displayNameChanged) changedData['displayName'] = _displayName;
-      if (emailChanged) changedData['email'] = _email;
-      if (uidChanged) changedData['uid'] = _uid;
-      if (phoneNumberChanged) changedData['phoneNumber'] = _phoneNumber;
-      if (photoUrlChange) changedData['photoUrl'] = _photoUrl;
+      DocumentReference publicRef = Firestore.instance.document('users/$_uid');
+      DocumentReference privateRef = Firestore.instance.document('users/$_uid/private/data');
+      Map<String, String> changedPrivateData = {};
+      Map<String, String> changedPublicData = {};
+      if (displayNameChanged) changedPublicData['displayName'] = _displayName;
+      if (photoUrlChange) changedPublicData['photoUrl'] = _photoUrl;
+      
+      if (emailChanged) changedPrivateData['email'] = _email;
+      if (phoneNumberChanged) changedPrivateData['phoneNumber'] = _phoneNumber;
 
-      writeBatch.updateData(userRef, changedData);
+      writeBatch.updateData(publicRef, changedPublicData);
+      writeBatch.updateData(privateRef, changedPrivateData);
       writeBatch.commit();
     } on StateError catch (e) {
       developer.log(e.message, error: e);
     }
     return null;
-  }
-
-  Future<String> get documentId async {
-    if (_documentId == null) {
-      _documentId = (await Firestore.instance
-              .collection('users')
-              .where('uid', isEqualTo: _uid)
-              .snapshots()
-              .single)
-          .documents
-          .single
-          .documentID;
-    }
-    return _documentId;
   }
 
   String get displayName => _displayName;
@@ -161,6 +143,7 @@ class CurrentUser implements User {
 
   Map<String, dynamic> toMap() {
     return {
+      User.FIELD_UID: _uid,
       User.FIELD_DISPLAYNAME: _displayName,
       User.FIELD_PHOTOURL: photoUrl,
     };
@@ -170,6 +153,7 @@ class CurrentUser implements User {
 class OtherUser extends User {
   String _displayName;
   String _photoUrl;
+  String _uid;
 
   /// The DocumentSnapshot must provide the following key:value pairs:
   /// 'displayName', 'email'
@@ -179,14 +163,19 @@ class OtherUser extends User {
   @override
   OtherUser.fromMap(Map<String, dynamic> map)
       : assert(map != null),
-        assert(map[User.FIELD_DISPLAYNAME] != null)/*,
-        assert(map[User.FIELD_PHOTOURL] != null)*/ {
+        assert(map[User.FIELD_DISPLAYNAME] != null),
+        assert(map[User.FIELD_UID] !=
+            null) /*,
+        assert(map[User.FIELD_PHOTOURL] != null)*/
+  {
+    this._uid = map[User.FIELD_UID];
     this._displayName = map[User.FIELD_DISPLAYNAME];
     this._photoUrl = map[User.FIELD_PHOTOURL];
   }
 
   Map<String, dynamic> toMap() {
     return {
+      User.FIELD_UID: _uid,
       User.FIELD_DISPLAYNAME: _displayName,
       User.FIELD_PHOTOURL: _photoUrl,
     };
@@ -197,4 +186,7 @@ class OtherUser extends User {
 
   @override
   String get photoUrl => _photoUrl;
+
+  @override
+  String get uid => _uid;
 }
