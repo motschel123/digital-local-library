@@ -1,5 +1,4 @@
 import 'package:digital_local_library/consts/field_name.dart';
-import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/material.dart';
 import 'dart:convert';
@@ -17,7 +16,7 @@ class BookBase {
       @required this.title,
       @required this.author,
       @required this.imagePath,
-      this.description = ""}) {}
+      this.description = ""});
 
   static Future<BookBase> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
@@ -76,23 +75,23 @@ class Book extends BookBase {
 
   static Book fromMap(Map<String, dynamic> map) {
     return Book(
-      title: map['${BooksDatabaseModel.FIELD_TITLE}'],
-      author: map['${BooksDatabaseModel.FIELD_AUTHOR}'],
-      imagePath: map['${BooksDatabaseModel.FIELD_IMAGE_PATH}'],
-      isbn: map['${BooksDatabaseModel.FIELD_ISBN}'],
-      owner: OtherUser.fromMap(map['${BooksDatabaseModel.FIELD_OWNER}']),
-      description: map['${BooksDatabaseModel.FIELD_DESCRIPTION}'] != null ? map['${BooksDatabaseModel.FIELD_DESCRIPTION}'] : "",
+      title: map['$BOOK_TITLE'],
+      author: map['$BOOK_AUTHOR'],
+      imagePath: map['$BOOK_IMAGE_PATH'],
+      isbn: map['$BOOK_ISBN'],
+      owner: OtherUser.fromMap(map['$BOOK_OWNER']),
+      description: map['$BOOK_DESCRIPTION'] != null ? map['$BOOK_DESCRIPTION'] : "",
     );
   }
 
   Map<String, dynamic> toMap() {
     return {
-      '${BooksDatabaseModel.FIELD_TITLE}': title,
-      '${BooksDatabaseModel.FIELD_AUTHOR}': author,
-      '${BooksDatabaseModel.FIELD_IMAGE_PATH}': imagePath,
-      '${BooksDatabaseModel.FIELD_ISBN}': isbn,
-      '${BooksDatabaseModel.FIELD_OWNER}': owner.toMap(),
-      '${BooksDatabaseModel.FIELD_DESCRIPTION}': description,
+      '$BOOK_TITLE': title,
+      '$BOOK_AUTHOR': author,
+      '$BOOK_IMAGE_PATH': imagePath,
+      '$BOOK_ISBN': isbn,
+      '$BOOK_OWNER': owner.toMap(),
+      '$BOOK_DESCRIPTION': description,
     };
   }
 
