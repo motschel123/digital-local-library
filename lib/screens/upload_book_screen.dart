@@ -73,7 +73,8 @@ class UploadBookScreenState extends State<UploadBookScreen> {
                 Align(
                   alignment: Alignment.topLeft,
                   child: Container(
-                    margin: EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
+                    margin:
+                        EdgeInsets.symmetric(vertical: 8.0, horizontal: 16.0),
                     height: 140.0,
                     child: imageLinkController.text == ""
                         ? null
@@ -248,13 +249,8 @@ class UploadBookScreenState extends State<UploadBookScreen> {
               setState(() {
                 fetchingData = true;
               });
-              if (await _uploadBook(context)) {
-                Navigator.of(context).pop(true);
-              } else {
-                _scaffoldKey.currentState.showSnackBar(
-                  SnackBar(content: Text("Something went wrong")),
-                );
-              }
+              await _uploadBook(context);
+              Navigator.of(context).pop(true);
               setState(() {
                 fetchingData = false;
               });
@@ -262,7 +258,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
     );
   }
 
-  Future<bool> _uploadBook(BuildContext context) async {
+  Future<void> _uploadBook(BuildContext context) async {
     FormState formState = _formKey.currentState;
     if (formState.validate()) {
       // Close keyboard
@@ -286,9 +282,7 @@ class UploadBookScreenState extends State<UploadBookScreen> {
         fetchingData = true;
       });
       return await ScopedModel.of<BooksDatabaseModel>(widget.modelContext)
-          .uploadBook(
-        book: uploadBook,
-      );
+          .uploadBook(uploadBook);
     }
     return false;
   }

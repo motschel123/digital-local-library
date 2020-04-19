@@ -6,38 +6,22 @@ import 'package:digital_local_library/data/book.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/widgets/book_displaying/book_card.dart';
 
-class BookFeed extends StatefulWidget {
-  @override
-  _BookFeedState createState() => _BookFeedState();
-}
-
-class _BookFeedState extends State<BookFeed> {
-  List<Book> books = [];
-
-  @override
-  void initState() {
-    super.initState();
-  }
-
+class BookFeed extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return ScopedModelDescendant<AppBarModel>(
       rebuildOnChange: true,
       builder: (context, child, appBarModel) {
         return ScopedModelDescendant<BooksDatabaseModel>(
-          rebuildOnChange: false,
+          rebuildOnChange: true,
           builder: (context, child, booksModel) {
-            books = booksModel.books;
             return RefreshIndicator(
               child: ListView(
                 physics: const AlwaysScrollableScrollPhysics(),
-                children: <Widget>[_createFeed(books, appBarModel.searchText)],
+                children: <Widget>[_createFeed(booksModel.books, appBarModel.searchText)],
               ),
               onRefresh: () {
-                setState(() {
-                  books = booksModel.books;
-                });
-                return Future<void>(() {});
+                return booksModel.updateBooks();
               },
             );
           },

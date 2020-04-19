@@ -1,3 +1,4 @@
+import 'package:digital_local_library/consts/field_name.dart';
 import 'package:digital_local_library/models/books_database_model.dart';
 import 'package:digital_local_library/sign_in/user.dart';
 import 'package:flutter/material.dart';
@@ -9,19 +10,14 @@ class BookBase {
   final String author;
   final String imagePath;
   final String isbn;
-
-  String _description = "";
+  final String description;
 
   BookBase(
       {@required this.isbn,
       @required this.title,
       @required this.author,
       @required this.imagePath,
-      String description}) {
-    _description = description;
-  }
-
-  String get description => _description;
+      this.description = ""}) {}
 
   static Future<BookBase> getByIsbn(String isbn) async {
     // Encode url and fetch result from API
@@ -67,6 +63,7 @@ class Book extends BookBase {
   final String author;
   final String imagePath;
   final String isbn;
+  final String description;
   final User owner;
 
   Book(
@@ -75,9 +72,7 @@ class Book extends BookBase {
       @required this.imagePath,
       @required this.isbn,
       @required this.owner,
-      String description}) {
-    this._description = description;
-  }
+      this.description = ""});
 
   static Book fromMap(Map<String, dynamic> map) {
     return Book(
