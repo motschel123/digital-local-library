@@ -34,7 +34,8 @@ class ChatsModel extends Model {
   }
 
   Future<Chat> chatWithPeer(String peerName) async {
-    currentUser.then((currentUser) {
+    currentUser.then<CurrentUser>((currentUser) {
+      
     });
   }
 }
