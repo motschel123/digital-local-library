@@ -1,46 +1,67 @@
-import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:digital_local_library/data/message.dart';
+import 'package:digital_local_library/firebase_interfaces/chatting.dart';
 import 'package:digital_local_library/screens/chats/chat_screen.dart';
 import 'package:digital_local_library/sqlite_db/chat_database_provider.dart';
 import 'package:flutter/material.dart';
 
-class Chat {
-  /// Supposed to be the document id of the
-  /// chat document in firestore '/chats'
-  int dbId;
+class BaseChat {
+  String peerUid;
+  String peerName;
+  String peerAvatarUrl;
+
+  BaseChat({
+    @required this.peerUid,
+    @required this.peerName,
+    @required this.peerAvatarUrl,
+  });
+
+  BaseChat.fromMap(map, {@required this.peerUid}) {
+    peerName = map[ChatDatabaseProvider.COLUMN_PEERNAME];
+    peerAvatarUrl = map[ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL];
+  }
+
+  Map<String, dynamic> toMap() {
+    return {
+      ChatDatabaseProvider.COLUMN_PEERNAME: peerName,
+      ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL: peerAvatarUrl,
+    };
+  }
+}
+
+class Chat extends BaseChat {
   String chatDocumentId;
   String peerUid;
   String peerName;
   String peerAvatarURL;
-  List<Message> messages;
 
-  Chat(
-      {this.dbId,
-      this.chatDocumentId,
-      @required this.peerUid,
-      @required this.peerName,
-      @required this.peerAvatarURL,
-      this.messages = const <Message>[]});
+  Stream<List<Message>> get messageStream =>
+      ChattingInterface.getMessages(this);
+
+  Chat({
+    @required this.chatDocumentId,
+    @required this.peerUid,
+    @required this.peerName,
+    @required this.peerAvatarURL,
+  }) : assert(chatDocumentId != null);
+
+  Future<void> newMessage(Message message) {
+    return ChattingInterface.newMessage(this, message: message);
+  }
 
   Map<String, dynamic> toMap() {
     Map<String, dynamic> map = {
       ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID: chatDocumentId,
       ChatDatabaseProvider.COLUMN_PEERNAME: peerName,
       ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL: peerAvatarURL,
-      ChatDatabaseProvider.COLUMN_MESSAGES: messages,
     };
-    if (dbId != null) {
-      map[ChatDatabaseProvider.COLUMN_DATABASE_ID] = dbId;
-    }
     return map;
   }
 
-  Chat.fromMap(Map<String, dynamic> map, {@required this.peerUid}) {
-    dbId = map[ChatDatabaseProvider.COLUMN_DATABASE_ID];
+  Chat.fromMap(Map<String, dynamic> map, {@required this.peerUid})
+      : assert(map[ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID] != null) {
     chatDocumentId = map[ChatDatabaseProvider.COLUMN_CHAT_DOCUMENT_ID];
     peerName = map[ChatDatabaseProvider.COLUMN_PEERNAME];
     peerAvatarURL = map[ChatDatabaseProvider.COLUMN_PEER_AVATAR_URL];
-    messages = [];
   }
 
   Future<T> pushChatScreen<T extends Object>(BuildContext context) {

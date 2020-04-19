@@ -1,5 +1,5 @@
 import 'package:cached_network_image/cached_network_image.dart';
-import 'package:digital_local_library/data/chat.dart';
+import 'package:digital_local_library/firebase_interfaces/chatting.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:digital_local_library/data/book.dart';
@@ -66,19 +66,15 @@ class BookCard implements ExpansionPanelRadio {
                   alignment: FractionalOffset.centerRight,
                   child: FlatButton(
                     onPressed: () async {
-                      String currentUsername =
+                      String currentUid =
                           (await AuthProvider.of(context).currentUser())
-                              .displayName;
-                      if (currentUsername == book.owner.displayName) {
+                              .uid;
+                      if (currentUid == book.owner.uid) {
                         Scaffold.of(context).showSnackBar(SnackBar(
                           content: Text("That's your own book"),
                         ));
                       } else {
-                        Chat newChat = Chat(
-                            peerName: book.owner.displayName,
-                            peerAvatarURL: book.owner.photoUrl,
-                            peerUid: book.owner.uid);
-                        newChat.pushChatScreen(context);
+                        (await ChattingInterface(currentUser: AuthProvider.of(context).currentUser()).getChatWith(book.owner.uid)).pushChatScreen(context);
                       }
                     },
                     child: Text("Message"),

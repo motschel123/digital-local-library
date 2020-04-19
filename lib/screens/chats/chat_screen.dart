@@ -1,9 +1,7 @@
 import 'package:digital_local_library/data/chat.dart';
 import 'package:digital_local_library/data/message.dart';
-import 'package:digital_local_library/models/messages_model.dart';
 import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
-import 'package:scoped_model/scoped_model.dart';
 
 class ChatScreen extends StatefulWidget {
   final Chat chat;
@@ -27,114 +25,116 @@ class _ChatScreenState extends State<ChatScreen> {
 
   @override
   Widget build(BuildContext context) {
-    return ScopedModel<MessagesModel>(
-      model: MessagesModel(chat: widget.chat),
-      child: Scaffold(
-        appBar: AppBar(
-          title: Row(
-            children: <Widget>[
-              Container(
-                width: 40,
-                height: 40,
-                decoration: BoxDecoration(
-                  shape: BoxShape.circle,
-                  image: DecorationImage(
-                    fit: BoxFit.scaleDown,
-                    image: NetworkImage(widget.chat.peerAvatarURL),
-                  ),
+    print("building chat screen with: ${widget.chat.peerName}");
+    print("listening to stream: ${widget.chat.messageStream.toString()}");
+    widget.chat.messageStream.forEach((messages) {
+      messages.forEach((message) {
+        print(message.text);
+      });
+    });
+    return Scaffold(
+      appBar: AppBar(
+        title: Row(
+          children: <Widget>[
+            Container(
+              width: 40,
+              height: 40,
+              decoration: BoxDecoration(
+                shape: BoxShape.circle,
+                image: DecorationImage(
+                  fit: BoxFit.scaleDown,
+                  image: NetworkImage(widget.chat.peerAvatarURL),
                 ),
               ),
-              Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
-              Text(widget.chat.peerName),
-            ],
-          ),
+            ),
+            Padding(padding: EdgeInsets.symmetric(horizontal: 5)),
+            Text(widget.chat.peerName),
+          ],
         ),
-        body: Column(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.max,
-          children: <Widget>[
-            Expanded(
-              child: ScopedModelDescendant<MessagesModel>(
-                builder: (context, _, messagesModel) {
-                  return Center(
-                    child: messagesModel.messages.isEmpty
-                        ? ListView(
-                            children: <Widget>[
-                              Container(
-                                alignment: Alignment.topCenter,
-                                child: Container(
-                                  decoration: BoxDecoration(
-                                    borderRadius:
-                                        BorderRadius.all(Radius.circular(8)),
-                                    color: Theme.of(context).accentColor,
-                                  ),
-                                  padding: EdgeInsets.all(8.0),
-                                  child: Text(
-                                    "No messages yet",
-                                    textScaleFactor: 2,
-                                  ),
+      ),
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.start,
+        mainAxisSize: MainAxisSize.max,
+        children: <Widget>[
+          Expanded(
+            child: StreamBuilder<List<Message>>(
+              stream: widget.chat.messageStream,
+              builder: (context, snapshot) {
+                return Center(
+                  child: !snapshot.hasData
+                      ? ListView(
+                          children: <Widget>[
+                            Container(
+                              alignment: Alignment.topCenter,
+                              child: Container(
+                                decoration: BoxDecoration(
+                                  borderRadius:
+                                      BorderRadius.all(Radius.circular(8)),
+                                  color: Theme.of(context).accentColor,
+                                ),
+                                padding: EdgeInsets.all(8.0),
+                                child: Text(
+                                  "No messages yet",
+                                  textScaleFactor: 2,
                                 ),
                               ),
-                            ],
-                          )
-                        : ListView.builder(
-                            itemCount: messagesModel.messages.length,
-                            itemBuilder: (context, index) {
-                              return MessageWidget(
-                                message:
-                                    messagesModel.messages.elementAt(index),
-                                peerName: messagesModel.chat.peerName,
-                              );
-                            },
-                          ),
-                  );
-                },
-              ),
-            ),
-            Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Row(
-                children: <Widget>[
-                  Expanded(
-                    child: Form(
-                      key: _formStateKey,
-                      child: TextFormField(
-                        controller: _msgCtr,
-                        validator: (text) {
-                          return text.isEmpty ? "" : null;
-                        },
-                      ),
-                    ),
-                  ),
-                  Builder(
-                    builder: (context) => RawMaterialButton(
-                      child: Icon(Icons.send),
-                      shape: CircleBorder(),
-                      fillColor: Colors.cyan,
-                      onPressed: () async {
-                        if (_formStateKey.currentState.validate()) {
-                          await ScopedModel.of<MessagesModel>(context,
-                                  rebuildOnChange: false)
-                              .newMessage(
-                            Message(
-                              dateTime: DateTime.now(),
-                              text: _msgCtr.text,
-                              username:
-                                  (await AuthProvider.of(context).currentUser())
-                                      .displayName,
                             ),
-                          );
-                          _msgCtr.clear();
-                        }
-                        FocusScope.of(context).unfocus();
+                          ],
+                        )
+                      : ListView.builder(
+                          itemCount: snapshot.data.length,
+                          itemBuilder: (context, index) {
+                            return MessageWidget(
+                              message: snapshot.data.elementAt(index),
+                              peerName: widget.chat.peerName,
+                            );
+                          },
+                        ),
+                );
+              },
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: <Widget>[
+                Expanded(
+                  child: Form(
+                    key: _formStateKey,
+                    child: TextFormField(
+                      controller: _msgCtr,
+                      validator: (text) {
+                        return text.isEmpty ? "" : null;
                       },
                     ),
                   ),
-                ],
-              ),
+                ),
+                Builder(
+                  builder: (context) => RawMaterialButton(
+                    child: Icon(Icons.send),
+                    shape: CircleBorder(),
+                    fillColor: Colors.cyan,
+                    onPressed: () async {
+                      if (_formStateKey.currentState.validate()) {
+                        await widget.chat.newMessage(
+                          Message(
+                            dateTime: DateTime.now(),
+                            text: _msgCtr.text,
+                            username:
+                                (await AuthProvider.of(context).currentUser())
+                                    .displayName,
+                          ),
+                        );
+                        _msgCtr.clear();
+                      }
+                      FocusScope.of(context).unfocus();
+                    },
+                  ),
+                ),
+              ],
             ),
-          ],
-        ),
+          ),
+        ],
       ),
     );
   }

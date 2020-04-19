@@ -79,7 +79,7 @@ class Book extends BookBase {
       author: map['$BOOK_AUTHOR'],
       imagePath: map['$BOOK_IMAGE_PATH'],
       isbn: map['$BOOK_ISBN'],
-      owner: OtherUser.fromMap(map['$BOOK_OWNER']),
+      owner: OtherUser.fromMap(map['$BOOK_OWNER'], uid: map['$BOOK_OWNER']['uid']),
       description: map['$BOOK_DESCRIPTION'] != null ? map['$BOOK_DESCRIPTION'] : "",
     );
   }

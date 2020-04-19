@@ -7,17 +7,17 @@ import 'package:flutter/material.dart';
 
 abstract class User {
   static const String FIELD_DISPLAYNAME = 'displayName';
-  static const String FIELD_PHOTOURL = 'photoUrl';
+  static const String FIELD_PHOTOURL = 'photoURL';
   static const String FIELD_UID = 'uid';
 
   String get displayName;
-  String get photoUrl;
+  String get photoURL;
   String get uid;
 
   Map<String, dynamic> toMap() {
     return {
       FIELD_DISPLAYNAME: displayName,
-      FIELD_PHOTOURL: photoUrl,
+      FIELD_PHOTOURL: photoURL,
     };
   }
 }
@@ -27,7 +27,7 @@ class CurrentUser implements User {
   String _email;
   String _uid;
   String _phoneNumber;
-  String _photoUrl;
+  String _photoURL;
 
   bool _isAnonymous = true;
   bool _isEmailVerified = false;
@@ -43,7 +43,7 @@ class CurrentUser implements User {
     this._isAnonymous = fUser.isAnonymous;
     this._isEmailVerified = fUser.isEmailVerified;
     this._phoneNumber = fUser.phoneNumber;
-    this._photoUrl = fUser.photoUrl;
+    this._photoURL = fUser.photoUrl;
   }
 
   Future<void> update(
@@ -99,7 +99,7 @@ class CurrentUser implements User {
       UserUpdateInfo updateInfo = UserUpdateInfo();
       updateInfo.photoUrl = photoUrl;
       await _fUser.updateProfile(updateInfo);
-      _photoUrl = photoUrl;
+      _photoURL = photoUrl;
       return true;
     } catch (e) {}
     return false;
@@ -114,12 +114,13 @@ class CurrentUser implements User {
     WriteBatch writeBatch = Firestore.instance.batch();
     try {
       DocumentReference publicRef = Firestore.instance.document('users/$_uid');
-      DocumentReference privateRef = Firestore.instance.document('users/$_uid/private/data');
+      DocumentReference privateRef =
+          Firestore.instance.document('users/$_uid/private/data');
       Map<String, String> changedPrivateData = {};
       Map<String, String> changedPublicData = {};
       if (displayNameChanged) changedPublicData['displayName'] = _displayName;
-      if (photoUrlChange) changedPublicData['photoUrl'] = _photoUrl;
-      
+      if (photoUrlChange) changedPublicData['photoUrl'] = _photoURL;
+
       if (emailChanged) changedPrivateData['email'] = _email;
       if (phoneNumberChanged) changedPrivateData['phoneNumber'] = _phoneNumber;
 
@@ -136,7 +137,7 @@ class CurrentUser implements User {
   String get email => _email;
   String get uid => _uid;
   String get phoneNumber => _phoneNumber;
-  String get photoUrl => _photoUrl;
+  String get photoURL => _photoURL;
 
   bool get isAnonymous => _isAnonymous;
   bool get isEmailVerified => _isEmailVerified;
@@ -145,14 +146,14 @@ class CurrentUser implements User {
     return {
       User.FIELD_UID: _uid,
       User.FIELD_DISPLAYNAME: _displayName,
-      User.FIELD_PHOTOURL: photoUrl,
+      User.FIELD_PHOTOURL: photoURL,
     };
   }
 }
 
 class OtherUser extends User {
   String _displayName;
-  String _photoUrl;
+  String _photoURL;
   String _uid;
 
   /// The DocumentSnapshot must provide the following key:value pairs:
@@ -161,23 +162,20 @@ class OtherUser extends User {
   /// The following key:value pairs are optional and possible null
   /// 'photoUrl', 'phoneNumber', 'isAnonymous', 'isEmailVerified'
   @override
-  OtherUser.fromMap(Map<String, dynamic> map)
+  OtherUser.fromMap(Map<String, dynamic> map, {String uid}) 
       : assert(map != null),
-        assert(map[User.FIELD_DISPLAYNAME] != null),
-        assert(map[User.FIELD_UID] !=
-            null) /*,
-        assert(map[User.FIELD_PHOTOURL] != null)*/
-  {
-    this._uid = map[User.FIELD_UID];
+        assert(map[User.FIELD_UID] != null || uid != null),
+        assert(map[User.FIELD_DISPLAYNAME] != null){
+    this._uid = uid != null ? uid : map[User.FIELD_UID] ;
     this._displayName = map[User.FIELD_DISPLAYNAME];
-    this._photoUrl = map[User.FIELD_PHOTOURL];
+    this._photoURL = map[User.FIELD_PHOTOURL];
   }
 
   Map<String, dynamic> toMap() {
     return {
       User.FIELD_UID: _uid,
       User.FIELD_DISPLAYNAME: _displayName,
-      User.FIELD_PHOTOURL: _photoUrl,
+      User.FIELD_PHOTOURL: _photoURL,
     };
   }
 
@@ -185,7 +183,7 @@ class OtherUser extends User {
   String get displayName => _displayName;
 
   @override
-  String get photoUrl => _photoUrl;
+  String get photoURL => _photoURL;
 
   @override
   String get uid => _uid;
