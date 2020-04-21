@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:digital_local_library/sign_in/user.dart';
 
 class UserTokenInterface {
-  static const FCM_TOKEN_FIELD = "fcmTokenField";
+  static const FCM_TOKEN_FIELD = "fcmToken";
 
   static Future<void> updateFcmToken(
       {@required Future<CurrentUser> currentUser,
