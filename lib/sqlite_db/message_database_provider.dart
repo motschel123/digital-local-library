@@ -3,5 +3,6 @@ class MessageDatabaseProvider {
   static const String COLUMN_ID = "id";
   static const String COLUMN_TEXT = "text";
   static const String COLUMN_USERNAME = "username";
+  static const String COLUMN_UID = "uid";
   static const String COLUMN_DATETIME = "dateTime";
 }

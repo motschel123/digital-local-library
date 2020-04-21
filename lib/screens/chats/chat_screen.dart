@@ -61,7 +61,7 @@ class _ChatScreenState extends State<ChatScreen> {
               stream: widget.chat.messageStream,
               builder: (context, snapshot) {
                 return Center(
-                  child: !snapshot.hasData
+                  child: (!snapshot.hasData || snapshot.data.length==0)
                       ? ListView(
                           children: <Widget>[
                             Container(
@@ -116,13 +116,14 @@ class _ChatScreenState extends State<ChatScreen> {
                     fillColor: Colors.cyan,
                     onPressed: () async {
                       if (_formStateKey.currentState.validate()) {
+                        CurrentUser currentUser =
+                            await AuthProvider.of(context).currentUser();
                         await widget.chat.newMessage(
                           Message(
                             dateTime: DateTime.now(),
                             text: _msgCtr.text,
-                            username:
-                                (await AuthProvider.of(context).currentUser())
-                                    .displayName,
+                            username: currentUser.displayName,
+                            uid: currentUser.uid,
                           ),
                         );
                         _msgCtr.clear();

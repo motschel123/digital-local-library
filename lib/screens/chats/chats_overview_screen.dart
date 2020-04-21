@@ -1,6 +1,8 @@
 import 'package:digital_local_library/data/chat.dart';
+import 'package:digital_local_library/firebase_interfaces/chatting.dart';
 import 'package:digital_local_library/models/chats_model.dart';
 import 'package:digital_local_library/screens/chats/chat_screen.dart';
+import 'package:digital_local_library/sign_in/auth_provider.dart';
 import 'package:flutter/material.dart';
 import 'package:scoped_model/scoped_model.dart';
 
@@ -9,24 +11,34 @@ class ChatsOverviewScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Chats")),
-      body: ScopedModelDescendant<ChatsModel>(
-        rebuildOnChange: true,
-        builder: (context, widget, chatsModel) {
-          if (chatsModel.chats.isEmpty) {
-            Center(
-              child: Text('No Chats Yet'),
-            );
-          }
-          return Center(
-            child: ListView.builder(
-              itemCount: chatsModel.chats.length,
-              itemBuilder: (context, index) => ChatCard(
-                chat: chatsModel.chats[index],
-              ),
-            ),
-          );
-        },
-      ),
+      body: FutureBuilder<Stream<List<Chat>>>(
+          future: ChattingInterface(
+                  currentUser: AuthProvider.of(context).currentUser())
+              .getActiveChats,
+          builder: (context, futureSnap) {
+            return futureSnap.hasData
+                ? StreamBuilder<List<Chat>>(
+                    stream: futureSnap.data,
+                    builder: (context, chatSnap) {
+                      if (!chatSnap.hasData) {
+                        return CircularProgressIndicator();
+                      } else if (chatSnap.data.length == 0) {
+                        return Center(
+                          child: Text('No Chats Yet'),
+                        );
+                      }
+                      return Center(
+                        child: ListView.builder(
+                          itemCount: chatSnap.data.length,
+                          itemBuilder: (context, index) => ChatCard(
+                            chat: chatSnap.data[index],
+                          ),
+                        ),
+                      );
+                    },
+                  )
+                : CircularProgressIndicator();
+          }),
     );
   }
 }

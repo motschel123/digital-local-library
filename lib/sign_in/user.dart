@@ -18,6 +18,7 @@ abstract class User {
     return {
       FIELD_DISPLAYNAME: displayName,
       FIELD_PHOTOURL: photoURL,
+      FIELD_UID: uid,
     };
   }
 }

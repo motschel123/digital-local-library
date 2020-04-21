@@ -8,8 +8,11 @@ import 'package:flutter/material.dart';
 class ChattingInterface {
   final Future<CurrentUser> currentUser;
 
-  static Stream<List<Message>> getMessages(Chat chat){
-    return Firestore.instance.collection('chats/${chat.chatDocumentId}/messages').snapshots().map<List<Message>>((querySnap) {
+  static Stream<List<Message>> getMessages(Chat chat) {
+    return Firestore.instance
+        .collection('chats/${chat.chatDocumentId}/messages')
+        .snapshots()
+        .map<List<Message>>((querySnap) {
       List<Message> messages = <Message>[];
       querySnap.documents.forEach((docSnap) {
         messages.add(Message.fromMap(docSnap.data));
@@ -18,8 +21,11 @@ class ChattingInterface {
     });
   }
 
-  static Future<DocumentReference> newMessage(Chat chat, {@required Message message}) {
-    return Firestore.instance.collection('chats/${chat.chatDocumentId}/messages').add(message.toMap());
+  static Future<DocumentReference> newMessage(Chat chat,
+      {@required Message message}) {
+    return Firestore.instance
+        .collection('chats/${chat.chatDocumentId}/messages')
+        .add(message.toMap());
   }
 
   Future<Stream<List<Chat>>> get getActiveChats {
@@ -50,13 +56,16 @@ class ChattingInterface {
         return newChat(peerUid: peerUid);
       } else {
         String chatDocumentId = docSnap.data['chatDocumentId'];
-        return Firestore.instance.document('chats/$chatDocumentId').get().then<Chat>((chatDocSnap) {
-            return Chat(
-              peerUid: docSnap.documentID,
-              peerName: docSnap.data['peerName'],
-              peerAvatarURL: docSnap.data['peerAvatarURL'],
-              chatDocumentId: chatDocSnap.documentID,
-            );
+        return Firestore.instance
+            .document('chats/$chatDocumentId')
+            .get()
+            .then<Chat>((chatDocSnap) {
+          return Chat(
+            peerUid: docSnap.documentID,
+            peerName: docSnap.data['peerName'],
+            peerAvatarURL: docSnap.data['peerAvatarURL'],
+            chatDocumentId: chatDocSnap.documentID,
+          );
         });
       }
     });
